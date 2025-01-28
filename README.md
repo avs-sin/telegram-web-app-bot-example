@@ -1,7 +1,34 @@
-# Telegram Web Apps for Bots / Mini App Example
+# Telegram Web App Wallet Example
 
-Example HTML-file that contains a plain-JS interaction with Telegram Web Apps API. 
-See live demo (with jQuery): [Attach Bot](https://t.me/asmico_attach_bot).
+A simple Telegram Web App that demonstrates a cryptocurrency wallet interface. This example shows how to create a beautiful and functional wallet interface that can be embedded within Telegram.
+
+## Features
+
+- Dark theme support with Telegram theme integration
+- Total balance display
+- Quick action buttons (Send, Receive, Exchange, Sell)
+- Currency list with balances
+- Transaction history
+- Responsive design optimized for mobile
+
+## Setup
+
+1. Host these files on a web server
+2. Create a Telegram bot using [@BotFather](https://t.me/botfather)
+3. Set up the Web App URL in your bot's settings
+4. Access the wallet through your Telegram bot
+
+## Development
+
+The app uses vanilla HTML, CSS, and JavaScript with the Telegram Web App API. No additional build steps are required.
+
+## Preview
+
+You can preview this web app by accessing the GitHub Pages URL for this repository.
+
+## License
+
+MIT License
 
 ## Links
 * Official docs: https://core.telegram.org/bots/webapps
