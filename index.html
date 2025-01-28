@@ -19,10 +19,13 @@
         setThemeClass();
 
     </script>
-    <title>Wallet Mini App</title>
+    <title>Crypto Paper Trading Simulator</title>
     <style>
         body {
-            --bg-color: var(--tg-theme-bg-color, #000);
+            --bg-color: var(--tg-theme-bg-color, #f8f9ff);
+            --positive-color: #16c784;
+            --negative-color: #ea3943;
+            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--tg-theme-text-color, #fff);
@@ -43,59 +46,59 @@
         }
 
         .header-title {
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--tg-theme-text-color, #1a1a1a);
         }
 
         .total-balance {
-            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
         }
 
         .balance-label {
             font-size: 14px;
             color: var(--tg-theme-hint-color, #8e8e93);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .balance-amount {
-            font-size: 32px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
+            font-size: 38px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: -1px;
         }
 
-        .balance-amount .info-icon {
-            margin-left: 8px;
-            color: var(--tg-theme-link-color, #64B5F6);
-            font-size: 16px;
+        .balance-subtext {
+            color: var(--positive-color);
+            font-size: 14px;
+            margin-top: 8px;
         }
 
         .action-buttons {
-            display: flex;
-            justify-content: space-between;
+            gap: 15px;
             margin: 25px 0;
-            padding: 0 10px;
         }
 
         .action-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--tg-theme-text-color, #fff);
-            text-decoration: none;
-            width: 60px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .action-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--tg-theme-link-color, #64B5F6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            font-size: 18px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2775ca, #63a4ff);
+            font-size: 24px;
         }
 
         .action-label {
@@ -104,47 +107,31 @@
         }
 
         .currency-list {
-            margin-top: 15px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 8px 0;
         }
 
         .currency-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
-            text-decoration: none;
-            color: inherit;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 4px 8px;
+            transition: background 0.2s ease;
+        }
+
+        .currency-item:hover {
+            background: rgba(0,0,0,0.03);
         }
 
         .currency-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--tg-theme-link-color, #64B5F6);
-            font-size: 14px;
+            background: #f0f3fa;
+            color: var(--tg-theme-text-color);
+            font-size: 18px;
         }
 
-        .currency-details {
-            flex: 1;
-        }
-
-        .currency-name {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .currency-amount {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color, #8e8e93);
-        }
-
-        .currency-value {
-            font-size: 16px;
+        .currency-change {
             font-weight: 500;
+            margin-left: 8px;
         }
 
         .transaction-history {
@@ -236,33 +223,36 @@
 <body style="visibility: hidden;">
     <div class="wallet-container">
         <div class="header">
-            <div class="header-title">Wallet</div>
+            <div>
+                <div class="header-title">Paper Trading</div>
+                <div class="balance-label" style="font-size: 14px; margin-top: 4px;">Practice Risk-Free</div>
+            </div>
         </div>
 
         <div class="total-balance">
-            <div class="balance-label">Total Balance</div>
+            <div class="balance-label">Paper Balance</div>
             <div class="balance-amount">
-                <span id="totalBalance">$250</span>
-                <span class="info-icon">ⓘ</span>
+                $10,000
+                <span class="balance-subtext">+2.4% Today</span>
             </div>
         </div>
 
         <div class="action-buttons">
-            <a href="#" class="action-button" onclick="WalletApp.handleSend(); return false;">
-                <div class="action-icon">↑</div>
-                <div class="action-label">Send</div>
+            <a href="#" class="action-button" onclick="WalletApp.handleBuy()">
+                <div class="action-icon">📈</div>
+                <div class="action-label">Buy</div>
             </a>
-            <a href="#" class="action-button" onclick="WalletApp.handleReceive(); return false;">
-                <div class="action-icon">↓</div>
-                <div class="action-label">Receive</div>
-            </a>
-            <a href="#" class="action-button" onclick="WalletApp.handleExchange(); return false;">
-                <div class="action-icon">↔</div>
-                <div class="action-label">Exchange</div>
-            </a>
-            <a href="#" class="action-button" onclick="WalletApp.handleSell(); return false;">
-                <div class="action-icon">$</div>
+            <a href="#" class="action-button" onclick="WalletApp.handleSell()">
+                <div class="action-icon">📉</div>
                 <div class="action-label">Sell</div>
+            </a>
+            <a href="#" class="action-button" onclick="WalletApp.openTrade()">
+                <div class="action-icon">⇄</div>
+                <div class="action-label">Trade</div>
+            </a>
+            <a href="#" class="action-button" onclick="WalletApp.showHistory()">
+                <div class="action-icon">📋</div>
+                <div class="action-label">History</div>
             </a>
         </div>
 
@@ -294,12 +284,21 @@
             </a>
 
             <a href="#" class="currency-item">
+                <div class="currency-icon">🎓</div>
+                <div class="currency-details">
+                    <div class="currency-name">Learning Center</div>
+                    <div class="currency-amount">Start with beginner tutorials</div>
+                </div>
+            </a>
+
+            <a href="#" class="currency-item">
                 <div class="currency-icon">₿</div>
                 <div class="currency-details">
-                    <div class="currency-name">Bitcoin</div>
-                    <div class="currency-amount">0 BTC</div>
+                    <div class="currency-name">Bitcoin 
+                        <span class="currency-change positive">$42,150 ▲2.4%</span>
+                    </div>
+                    <div class="currency-amount">Available: 0.234 BTC</div>
                 </div>
-                <div class="currency-value">$0</div>
             </a>
         </div>
 
