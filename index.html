@@ -202,6 +202,34 @@
         .transaction-amount.sent {
             color: #F44336;
         }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .action-button {
+                width: 100%;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-button {
+            transition: transform 0.2s ease;
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 

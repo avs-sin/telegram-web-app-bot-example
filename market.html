@@ -19,6 +19,13 @@
     </script>
     <title>P2P Market</title>
     <style>
+        :root {
+            --primary-color: #0088cc;
+            --success-color: #00a884;
+            --danger-color: #f8424e;
+            --border-radius: 10px;
+        }
+
         body {
             --bg-color: var(--tg-theme-bg-color, #000);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -122,8 +129,8 @@
         .action-button {
             flex: 1;
             padding: 12px;
-            border-radius: 8px;
-            background: var(--tg-theme-button-color, #64B5F6);
+            border-radius: var(--border-radius);
+            background: var(--primary-color);
             color: var(--tg-theme-button-text-color, #fff);
             text-align: center;
             text-decoration: none;

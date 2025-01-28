@@ -146,13 +146,28 @@
         const transactionId = urlParams.get('id');
         
         // Load transaction details
-        const transaction = WalletApp.getTransaction(transactionId);
-        if (transaction) {
-            document.getElementById('transactionUser').textContent = transaction.user;
-            document.getElementById('transactionAmount').textContent = transaction.amount;
-            document.getElementById('transactionTime').textContent = transaction.time;
-            document.getElementById('transactionStatus').textContent = transaction.status;
+        function loadTransactionDetails() {
+            try {
+                const transaction = WalletApp.getTransaction(transactionId);
+                if (!transaction) throw new Error('Transaction not found');
+                
+                const sanitize = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                document.getElementById('transactionUser').textContent = sanitize(transaction.user);
+                document.getElementById('transactionAmount').textContent = 
+                    WalletApp.formatCurrency(transaction.amount);
+                document.getElementById('transactionTime').textContent = 
+                    new Date(transaction.date).toLocaleString();
+                document.getElementById('transactionStatus').textContent = transaction.status;
+            } catch (error) {
+                document.querySelector('.container').innerHTML = `
+                    <div class="error-state fade-in">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-message">${error.message}</div>
+                    </div>
+                `;
+            }
         }
+        loadTransactionDetails();
     </script>
 </body>
 </html> 

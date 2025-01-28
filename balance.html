@@ -284,8 +284,8 @@
         WalletApp.init();
 
         // Update UI with state
-        document.getElementById('tonBalanceUsd').textContent = WalletApp.formatBalance(WalletApp.state.tonBalance * 2); // Assuming 1 TON = $2
-        document.getElementById('tonBalance').textContent = `${WalletApp.state.tonBalance} TON`;
+        document.getElementById('tonBalanceUsd').textContent = WalletApp.formatCurrency(WalletApp.state.balance * 2); // Assuming 1 TON = $2
+        document.getElementById('tonBalance').textContent = `${WalletApp.state.balance} TON`;
     </script>
 </body>
 </html> 
