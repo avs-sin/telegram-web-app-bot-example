@@ -1,0 +1,29 @@
+:root {
+    --primary-color: #00C805;
+    --danger-color: #FF5000;
+    --bg-color: var(--tg-theme-bg-color, #f8f9ff);
+    --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
+    --text-color: var(--tg-theme-text-color, #1a1a1a);
+    --text-secondary: var(--tg-theme-hint-color, #7c7c7c);
+    --border-color: rgba(0,0,0,0.1);
+    --gradient-primary: linear-gradient(135deg, #00C805, #04e909);
+    --gradient-secondary: linear-gradient(135deg, #2775ca, #63a4ff);
+    --animation-speed: 0.3s;
+    --bounce-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Add all the shared styles from index.html here */ 

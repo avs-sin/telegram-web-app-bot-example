@@ -128,5 +128,36 @@ const WalletApp = {
             style: 'currency',
             currency: 'USD'
         }).format(amount);
+    },
+
+    handleAssetClick(symbol) {
+        // Get the coin data
+        const coinData = this.getCoinData(symbol);
+        if (coinData) {
+            // Store the selected coin data in localStorage (more reliable than sessionStorage)
+            localStorage.setItem('selectedCoin', JSON.stringify(coinData));
+            // Navigate to coin detail page
+            window.location.href = 'coin-detail.html';
+        }
+    },
+
+    getCoinData(symbol) {
+        // Static data for demo
+        const coins = {
+            'BTC': {
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                price: 101099.33,
+                change: -1.68,
+                changeAmount: -1724.63,
+                stats: {
+                    weekHigh: 109100.29,
+                    weekLow: 41806.04,
+                    volume: '29.43B',
+                    marketCap: '1.99T'
+                }
+            }
+        };
+        return coins[symbol];
     }
 }; 

@@ -8,327 +8,876 @@
     <meta name="MobileOptimized" content="176" />
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
-    <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         function setThemeClass() {
             document.documentElement.className = Telegram.WebApp.colorScheme;
         }
-
         Telegram.WebApp.onEvent('themeChanged', setThemeClass);
         setThemeClass();
-
     </script>
     <title>Crypto Paper Trading Simulator</title>
     <style>
-        body {
-            --bg-color: var(--tg-theme-bg-color, #f8f9ff);
-            --positive-color: #16c784;
-            --negative-color: #ea3943;
-            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--tg-theme-text-color, #fff);
-            margin: 0;
-            padding: 0;
-            color-scheme: var(--tg-color-scheme);
+        :root {
+            --primary-color: #FFD700; /* Gold color */
+            --danger-color: #FF4444;
+            --bg-color: #1A1A1A; /* Dark background */
+            --card-bg: #2A2A2A;
+            --text-color: #FFFFFF;
+            --text-secondary: #CCCCCC;
+            --border-color: rgba(255,255,255,0.1);
+            --gradient-primary: linear-gradient(135deg, #FFD700, #FFA500); /* Gold gradient */
+            --gradient-secondary: linear-gradient(135deg, #FF416C, #FF4B2B); /* Red gradient */
+            --animation-speed: 0.3s;
+            --bounce-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --glow: 0 0 20px rgba(255,215,0,0.5);
         }
 
-        .wallet-container {
-            padding: 15px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            background: radial-gradient(circle at center, #2A2A2A, #1A1A1A);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            padding: 20px 0;
         }
 
         .header-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--tg-theme-text-color, #1a1a1a);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 4px;
         }
 
-        .total-balance {
-            background: var(--card-bg);
-            padding: 20px;
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .welcome-banner {
+            background: var(--gradient-secondary);
+            box-shadow: var(--glow);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn var(--animation-speed) var(--bounce-timing);
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .balance-card {
+            background: var(--gradient-primary);
+            box-shadow: var(--glow);
+            border: 1px solid rgba(255,215,0,0.2);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: balancePulse 4s infinite;
+            transition: transform 0.3s var(--bounce-timing);
+        }
+
+        .balance-card:active {
+            transform: scale(0.98);
         }
 
         .balance-label {
             font-size: 14px;
-            color: var(--tg-theme-hint-color, #8e8e93);
-            margin-bottom: 6px;
+            opacity: 0.9;
+            margin-bottom: 8px;
         }
 
         .balance-amount {
-            font-size: 38px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: -1px;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.8), #ffffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: pulse 2s infinite ease-in-out;
         }
 
-        .balance-subtext {
-            color: var(--positive-color);
+        .balance-change {
             font-size: 14px;
-            margin-top: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
-        .action-buttons {
-            gap: 15px;
-            margin: 25px 0;
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+            animation: slideIn var(--animation-speed) var(--bounce-timing) 0.2s;
         }
 
         .action-button {
             background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             border-radius: 12px;
-            padding: 16px;
-            transition: all 0.2s ease;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s var(--bounce-timing);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
         .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255,215,0,0.3);
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+
+        .action-button:hover::after {
+            opacity: 1;
         }
 
         .action-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #2775ca, #63a4ff);
-            font-size: 24px;
+            font-size: 28px;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+            transition: transform 0.3s var(--bounce-timing);
+            animation: none;
+        }
+
+        .action-button:hover .action-icon {
+            animation: spin 0.6s var(--bounce-timing);
         }
 
         .action-label {
-            font-size: 12px;
-            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
         }
 
-        .currency-list {
+        .action-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .learn-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 8px 0;
+            padding: 20px;
+            margin: 24px 0;
+            border: 1px solid var(--border-color);
+            animation: slideIn var(--animation-speed) var(--bounce-timing) 0.3s;
+            transition: transform 0.3s ease;
         }
 
-        .currency-item {
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin: 4px 8px;
-            transition: background 0.2s ease;
+        .learn-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
-        .currency-item:hover {
-            background: rgba(0,0,0,0.03);
+        .learn-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-secondary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
         }
 
-        .currency-icon {
-            background: #f0f3fa;
-            color: var(--tg-theme-text-color);
+        .learn-title {
             font-size: 18px;
+            font-weight: 600;
         }
 
-        .currency-change {
+        .learn-steps {
+            display: grid;
+            gap: 12px;
+        }
+
+        .learn-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0,0,0,0.02);
+            border-radius: 8px;
+            transition: all 0.3s var(--bounce-timing);
+            cursor: pointer;
+        }
+
+        .learn-step:hover {
+            transform: translateX(8px);
+            background: rgba(0,200,5,0.1);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            transition: transform 0.3s var(--bounce-timing);
+        }
+
+        .learn-step:hover .step-number {
+            transform: scale(1.1);
+        }
+
+        .step-text {
+            font-size: 14px;
             font-weight: 500;
-            margin-left: 8px;
+        }
+
+        .assets-section {
+            margin-top: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .asset-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s var(--bounce-timing);
+        }
+
+        .asset-card:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(255,215,0,0.3);
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .asset-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: var(--gradient-primary);
+            box-shadow: var(--glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            transition: all 0.6s var(--bounce-timing);
+        }
+
+        .asset-card:hover .asset-icon {
+            transform: rotate(8deg) scale(1.1);
+        }
+
+        .asset-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .asset-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .asset-balance {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .asset-price {
+            text-align: right;
+        }
+
+        .asset-value {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .asset-change {
+            font-size: 14px;
+            color: var(--primary-color);
         }
 
         .transaction-history {
-            margin-top: 20px;
-        }
-
-        .transaction-header {
-            font-size: 13px;
-            color: var(--tg-theme-hint-color, #8e8e93);
-            margin-bottom: 10px;
-            text-transform: uppercase;
+            margin-top: 32px;
         }
 
         .transaction-item {
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
-            text-decoration: none;
-            color: inherit;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            animation: slideIn var(--animation-speed) var(--bounce-timing);
+            animation-fill-mode: both;
+            transition: all 0.3s var(--bounce-timing);
         }
 
-        .transaction-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            margin-right: 12px;
-            background: #444;
-            overflow: hidden;
+        .transaction-item:hover {
+            box-shadow: 0 4px 12px rgba(255,215,0,0.2);
+            background: var(--card-bg);
+            transform: translateX(8px);
+            border-radius: 12px;
+            margin: 4px 0;
         }
 
         .transaction-info {
-            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .transaction-name {
-            font-size: 16px;
-            margin-bottom: 4px;
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: var(--gradient-secondary);
+            box-shadow: var(--glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s var(--bounce-timing);
+        }
+
+        .transaction-item:hover .transaction-icon {
+            transform: scale(1.1);
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-title {
+            font-weight: 500;
+            margin-bottom: 2px;
         }
 
         .transaction-date {
-            font-size: 13px;
-            color: var(--tg-theme-hint-color, #8e8e93);
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
         .transaction-amount {
-            font-size: 16px;
             font-weight: 500;
         }
 
-        .transaction-amount.received {
-            color: #4CAF50;
+        .positive {
+            color: var(--primary-color);
+            animation: winFlash 1s ease;
         }
 
-        .transaction-amount.sent {
-            color: #F44336;
+        .negative {
+            color: var(--danger-color);
         }
 
-        @media (max-width: 480px) {
-            .action-buttons {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .action-button {
-                width: 100%;
-            }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .action-button {
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .animate-in {
+            animation: dealCard 0.6s var(--bounce-timing) backwards;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, 
+                var(--card-bg) 0%, 
+                rgba(255,255,255,0.5) 50%, 
+                var(--card-bg) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        .value-increase {
+            animation: valueIncrease 0.5s var(--bounce-timing);
+            color: var(--primary-color);
+        }
+
+        .value-decrease {
+            animation: valueDecrease 0.5s var(--bounce-timing);
+            color: var(--danger-color);
+        }
+
+        @keyframes valueIncrease {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: var(--primary-color); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes valueDecrease {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: var(--danger-color); }
+            100% { transform: scale(1); }
+        }
+
+        .buy-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .buy-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--glow);
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(20px);
+            transition: transform 0.3s var(--bounce-timing);
+        }
+
+        .buy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .buy-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .buy-close {
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .buy-close:hover {
+            animation: spin 0.8s ease;
+        }
+
+        .asset-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .asset-option {
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s var(--bounce-timing);
+        }
+
+        .asset-option.active {
+            border-color: var(--primary-color);
+            background: rgba(255,215,0,0.1);
+            box-shadow: var(--glow);
+        }
+
+        .amount-input {
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .amount-field {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 18px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .max-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
             transition: transform 0.2s ease;
         }
 
-        .action-button:active {
-            transform: scale(0.98);
+        .max-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .preview-section {
+            background: rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .preview-label {
+            color: var(--text-secondary);
+        }
+
+        .preview-value {
+            font-weight: 500;
+        }
+
+        @keyframes balancePulse {
+            0% { transform: scale(1); }
+            90% { transform: scale(1); }
+            95% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes winFlash {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(255,215,0,0.2); }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes dealCard {
+            from {
+                transform: rotate(-5deg) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: rotate(0) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-
 <body style="visibility: hidden;">
-    <div class="wallet-container">
+    <div class="container">
         <div class="header">
-            <div>
-                <div class="header-title">Paper Trading</div>
-                <div class="balance-label" style="font-size: 14px; margin-top: 4px;">Practice Risk-Free</div>
-            </div>
+            <div class="header-title">Crypto Trading Simulator</div>
+            <div class="header-subtitle">Learn & Practice Risk-Free</div>
         </div>
 
-        <div class="total-balance">
-            <div class="balance-label">Paper Balance</div>
-            <div class="balance-amount">
-                $10,000
-                <span class="balance-subtext">+2.4% Today</span>
-            </div>
+        <div class="welcome-banner">
+            <div class="welcome-title">Welcome to Paper Trading! 👋</div>
+            <div class="welcome-text">Practice trading with virtual money and learn crypto trading basics.</div>
         </div>
 
-        <div class="action-buttons">
+        <div class="balance-card">
+            <div class="balance-label">Your Portfolio</div>
+            <div class="balance-amount">$10,000.00</div>
+            <div class="balance-change">+$240.00 (2.4%) Today</div>
+        </div>
+
+        <div class="quick-actions">
             <a href="#" class="action-button" onclick="WalletApp.handleBuy()">
-                <div class="action-icon">📈</div>
-                <div class="action-label">Buy</div>
+                <div class="action-icon">💰</div>
+                <div class="action-label">Buy Crypto</div>
+                <div class="action-description">Start with $10 minimum</div>
             </a>
             <a href="#" class="action-button" onclick="WalletApp.handleSell()">
-                <div class="action-icon">📉</div>
-                <div class="action-label">Sell</div>
-            </a>
-            <a href="#" class="action-button" onclick="WalletApp.openTrade()">
-                <div class="action-icon">⇄</div>
-                <div class="action-label">Trade</div>
-            </a>
-            <a href="#" class="action-button" onclick="WalletApp.showHistory()">
-                <div class="action-icon">📋</div>
-                <div class="action-label">History</div>
+                <div class="action-icon">📈</div>
+                <div class="action-label">Sell Position</div>
+                <div class="action-description">Cash out anytime</div>
             </a>
         </div>
 
-        <div class="currency-list">
-            <a href="#" class="currency-item" onclick="WalletApp.navigateTo('market.html'); return false;">
-                <div class="currency-icon">T</div>
-                <div class="currency-details">
-                    <div class="currency-name">TON Space</div>
-                    <div class="currency-amount">Start exploring TON</div>
+        <div class="learn-card">
+            <div class="learn-header">
+                <div class="learn-icon">🎓</div>
+                <div class="learn-title">Getting Started</div>
+            </div>
+            <div class="learn-steps">
+                <div class="learn-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Start with $10,000 virtual money</div>
                 </div>
-            </a>
-
-            <a href="#" class="currency-item" onclick="WalletApp.navigateTo('balance.html'); return false;">
-                <div class="currency-icon">T</div>
-                <div class="currency-details">
-                    <div class="currency-name">Toncoin</div>
-                    <div class="currency-amount">100 TON</div>
+                <div class="learn-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Practice buying & selling crypto</div>
                 </div>
-                <div class="currency-value">$150</div>
-            </a>
-
-            <a href="#" class="currency-item">
-                <div class="currency-icon">$</div>
-                <div class="currency-details">
-                    <div class="currency-name">Dollars</div>
-                    <div class="currency-amount">50 USDT</div>
+                <div class="learn-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Learn from your trading history</div>
                 </div>
-                <div class="currency-value">$50</div>
-            </a>
+            </div>
+        </div>
 
-            <a href="#" class="currency-item">
-                <div class="currency-icon">🎓</div>
-                <div class="currency-details">
-                    <div class="currency-name">Learning Center</div>
-                    <div class="currency-amount">Start with beginner tutorials</div>
-                </div>
-            </a>
-
-            <a href="#" class="currency-item">
-                <div class="currency-icon"><i class="fas fa-coins"></i></div>
-                <div class="currency-details">
-                    <div class="currency-name">Bitcoin 
-                        <span class="currency-change positive">$42,150 ▲2.4%</span>
+        <div class="assets-section">
+            <div class="section-title">Your Portfolio</div>
+            
+            <a href="#" class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">₿</div>
+                    <div class="asset-details">
+                        <div class="asset-name">Bitcoin</div>
+                        <div class="asset-balance">0.234 BTC</div>
                     </div>
-                    <div class="currency-amount">Available: 0.234 BTC</div>
+                </div>
+                <div class="asset-price">
+                    <div class="asset-value">$42,150</div>
+                    <div class="asset-change">▲2.4%</div>
+                </div>
+            </a>
+
+            <a href="#" class="asset-card">
+                <div class="asset-info">
+                    <div class="asset-icon">Ꚍ</div>
+                    <div class="asset-details">
+                        <div class="asset-name">TON</div>
+                        <div class="asset-balance">100 TON</div>
+                    </div>
+                </div>
+                <div class="asset-price">
+                    <div class="asset-value">$150</div>
+                    <div class="asset-change">▲1.2%</div>
                 </div>
             </a>
         </div>
 
         <div class="transaction-history">
-            <div class="transaction-header">Transaction History</div>
-            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=1'); return false;">
-                <div class="transaction-avatar"></div>
+            <div class="section-title">Recent Activity</div>
+            
+            <div class="transaction-item">
                 <div class="transaction-info">
-                    <div class="transaction-name">Noah</div>
-                    <div class="transaction-date">Yesterday</div>
+                    <div class="transaction-icon">📥</div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Bought TON</div>
+                        <div class="transaction-date">Yesterday</div>
+                    </div>
                 </div>
-                <div class="transaction-amount received">+10 TON</div>
-            </a>
-            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=2'); return false;">
-                <div class="transaction-avatar"></div>
+                <div class="transaction-amount positive">+10 TON</div>
+            </div>
+
+            <div class="transaction-item">
                 <div class="transaction-info">
-                    <div class="transaction-name">Alex</div>
-                    <div class="transaction-date">November 8 at 10:25 AM</div>
+                    <div class="transaction-icon">📤</div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Sold TON</div>
+                        <div class="transaction-date">Nov 8 at 10:25 AM</div>
+                    </div>
                 </div>
-                <div class="transaction-amount sent">-5 TON</div>
-            </a>
+                <div class="transaction-amount negative">-5 TON</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="buy-overlay" id="buyOverlay">
+        <div class="buy-container">
+            <div class="buy-header">
+                <div class="buy-title">Buy Crypto</div>
+                <div class="buy-close" onclick="WalletApp.handleCloseBuy()">✕</div>
+            </div>
+            
+            <div class="asset-selector" id="assetSelector">
+                <div class="asset-option" data-asset="BTC" onclick="WalletApp.selectAsset('BTC')">
+                    <div class="asset-info">
+                        <div class="asset-icon">₿</div>
+                        <div class="asset-details">
+                            <div class="asset-name">Bitcoin</div>
+                            <div class="asset-balance">$42,150</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="asset-option" data-asset="TON" onclick="WalletApp.selectAsset('TON')">
+                    <div class="asset-info">
+                        <div class="asset-icon">Ꚍ</div>
+                        <div class="asset-details">
+                            <div class="asset-name">TON</div>
+                            <div class="asset-balance">$1.50</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="amount-input">
+                <label class="input-group">
+                    <input type="number" 
+                           class="amount-field" 
+                           id="buyAmount"
+                           placeholder="0.00"
+                           step="0.0001"
+                           min="0"
+                           oninput="WalletApp.updateBuyPreview()">
+                    <span class="max-button" onclick="WalletApp.setMaxAmount()">MAX</span>
+                </label>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-row">
+                    <span class="preview-label">Total Cost</span>
+                    <span class="preview-value" id="totalCost">$0.00</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-label">Available</span>
+                    <span class="preview-value" id="availableBalance">$10,000.00</span>
+                </div>
+            </div>
+
+            <button class="action-button" style="margin-top: 20px; width: 100%;" 
+                    onclick="WalletApp.executeBuy()">
+                Confirm Buy
+            </button>
         </div>
     </div>
 
     <script>
-        // Initialize app
+        document.body.style.visibility = '';
         WalletApp.init();
 
-        // Update UI with state
-        document.getElementById('totalBalance').textContent = WalletApp.formatBalance(WalletApp.state.currentBalance);
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.asset-card, .transaction-item, .learn-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        function animateValue(element, start, end, duration) {
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const updateValue = () => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    element.textContent = end.toFixed(2);
+                    return;
+                }
+                element.textContent = current.toFixed(2);
+                requestAnimationFrame(updateValue);
+            };
+            
+            requestAnimationFrame(updateValue);
+        }
     </script>
 </body>
 </html>

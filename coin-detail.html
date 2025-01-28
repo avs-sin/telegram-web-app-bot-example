@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Bitcoin - Crypto Trading Simulator</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        function setThemeClass() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+        }
+        Telegram.WebApp.onEvent('themeChanged', setThemeClass);
+        setThemeClass();
+    </script>
+    <style>
+        /* Coin detail specific styles */
+        .coin-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-button {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px;
+            margin: -8px;
+        }
+
+        .coin-info {
+            padding: 20px 16px;
+        }
+
+        .coin-price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .price-change {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .price-change.positive {
+            color: var(--primary-color);
+        }
+
+        .price-change.negative {
+            color: var(--danger-color);
+        }
+
+        .chart-container {
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .time-filter {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .time-filter.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .buy-button {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s var(--bounce-timing);
+        }
+
+        .buy-button:active {
+            transform: scale(0.98);
+        }
+
+        .news-section {
+            padding: 16px;
+            margin-bottom: 80px;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-source {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .news-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .news-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .news-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body style="visibility: hidden;">
+    <div class="coin-header">
+        <a href="index.html" class="back-button">←</a>
+        <h1>Bitcoin</h1>
+    </div>
+
+    <div class="coin-info">
+        <div class="coin-price" data-price="101099.33">$101,099.33</div>
+        <div class="price-change negative">▼ $1,724.63 (1.68%) Today</div>
+    </div>
+
+    <div class="time-filters">
+        <button class="time-filter">LIVE</button>
+        <button class="time-filter active">1D</button>
+        <button class="time-filter">1W</button>
+        <button class="time-filter">1M</button>
+        <button class="time-filter">3M</button>
+        <button class="time-filter">1Y</button>
+        <button class="time-filter">5Y</button>
+    </div>
+
+    <div class="chart-container">
+        <!-- Chart would be rendered here using a charting library -->
+        <div style="width: 100%; height: 300px; background: var(--card-bg); border-radius: 12px;"></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">52 wk high</div>
+            <div class="stat-value">$109,100.29</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">24h volume</div>
+            <div class="stat-value">$29.43B</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">52 wk low</div>
+            <div class="stat-value">$41,806.04</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Market cap</div>
+            <div class="stat-value">$1.99T</div>
+        </div>
+    </div>
+
+    <div class="news-section">
+        <h2>News</h2>
+        <div class="news-item">
+            <div class="news-content">
+                <div class="news-source">Decrypt • 11m</div>
+                <div class="news-title">What Is MicroStrategy? The Bitcoin Treasury Company</div>
+                <div class="news-meta">MSTR -3.25%</div>
+            </div>
+        </div>
+        <div class="news-item">
+            <div class="news-content">
+                <div class="news-source">Bitcoinist • 1h</div>
+                <div class="news-title">Why Bitcoin Purists Can't Stand XRP: Ripple CTO Spills The Beans</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="buy-button">Buy</button>
+
+    <script src="js/app.js"></script>
+    <script src="js/coin-detail.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            WalletApp.init();
+            CoinDetail.init();
+        });
+    </script>
+</body>
+</html> 
