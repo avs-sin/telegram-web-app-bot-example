@@ -160,6 +160,8 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
+            text-decoration: none;
+            color: inherit;
         }
 
         .transaction-avatar {
@@ -272,22 +274,22 @@
 
         <div class="transaction-history">
             <div class="transaction-header">Transaction History</div>
-            <div class="transaction-item">
+            <a href="transaction.html" class="transaction-item">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Noah</div>
                     <div class="transaction-date">Yesterday</div>
                 </div>
                 <div class="transaction-amount received">+10 TON</div>
-            </div>
-            <div class="transaction-item">
+            </a>
+            <a href="transaction.html" class="transaction-item">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Alex</div>
                     <div class="transaction-date">November 8 at 10:25 AM</div>
                 </div>
                 <div class="transaction-amount sent">-5 TON</div>
-            </div>
+            </a>
         </div>
     </div>
 
