@@ -9,6 +9,7 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script src="js/app.js"></script>
     <script>
         function setThemeClass() {
             document.documentElement.className = Telegram.WebApp.colorScheme;
@@ -116,43 +117,42 @@
 <body style="visibility: hidden;">
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-button">← Back</a>
+            <a href="#" class="back-button" onclick="WalletApp.navigateBack(); return false;">← Back</a>
             <div class="title">Wallet</div>
         </div>
 
         <div class="transaction-info">
             <div class="user-info">
                 <div class="avatar"></div>
-                <div class="user-name">Received from Noah</div>
+                <div class="user-name" id="transactionUser">Received from Noah</div>
             </div>
             
-            <div class="amount">+10 TON</div>
-            <div class="timestamp">November 8 at 8:40 AM</div>
+            <div class="amount" id="transactionAmount">+10 TON</div>
+            <div class="timestamp" id="transactionTime">November 8 at 8:40 AM</div>
 
             <div class="status-container">
                 <div class="status-label">Status</div>
-                <div class="status-value">Success</div>
+                <div class="status-value" id="transactionStatus">Success</div>
             </div>
         </div>
     </div>
 
     <script>
-        const TransactionApp = {
-            init() {
-                Telegram.WebApp.ready();
-                document.body.style.visibility = '';
-                Telegram.WebApp.setHeaderColor('secondary_bg_color');
-                
-                // Enable back button
-                Telegram.WebApp.BackButton.show();
-                Telegram.WebApp.BackButton.onClick(() => {
-                    window.location.href = 'index.html';
-                });
-            }
-        };
-
         // Initialize app
-        TransactionApp.init();
+        WalletApp.init();
+
+        // Get transaction ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const transactionId = urlParams.get('id');
+        
+        // Load transaction details
+        const transaction = WalletApp.getTransaction(transactionId);
+        if (transaction) {
+            document.getElementById('transactionUser').textContent = transaction.user;
+            document.getElementById('transactionAmount').textContent = transaction.amount;
+            document.getElementById('transactionTime').textContent = transaction.time;
+            document.getElementById('transactionStatus').textContent = transaction.status;
+        }
     </script>
 </body>
 </html> 

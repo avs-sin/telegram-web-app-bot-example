@@ -9,6 +9,7 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script src="js/app.js"></script>
     <script>
         function setThemeClass() {
             document.documentElement.className = Telegram.WebApp.colorScheme;
@@ -192,7 +193,7 @@
 <body style="visibility: hidden;">
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-button">← Back</a>
+            <a href="#" class="back-button" onclick="WalletApp.navigateBack(); return false;">← Back</a>
             <div class="title">Wallet</div>
         </div>
 
@@ -202,24 +203,24 @@
                 Toncoin Balance
                 <span class="info-icon">ⓘ</span>
             </div>
-            <div class="balance-amount">$200</div>
-            <div class="balance-ton">100 TON</div>
+            <div class="balance-amount" id="tonBalanceUsd">$200</div>
+            <div class="balance-ton" id="tonBalance">100 TON</div>
         </div>
 
         <div class="action-buttons">
-            <a href="#" class="action-button">
+            <a href="#" class="action-button" onclick="WalletApp.handleSend(); return false;">
                 <div class="action-icon">↑</div>
                 <div class="action-label">Send</div>
             </a>
-            <a href="#" class="action-button">
+            <a href="#" class="action-button" onclick="WalletApp.handleReceive(); return false;">
                 <div class="action-icon">↓</div>
                 <div class="action-label">Receive</div>
             </a>
-            <a href="#" class="action-button">
+            <a href="#" class="action-button" onclick="WalletApp.handleBuy(); return false;">
                 <div class="action-icon">↔</div>
                 <div class="action-label">Buy</div>
             </a>
-            <a href="#" class="action-button">
+            <a href="#" class="action-button" onclick="WalletApp.handleExchange(); return false;">
                 <div class="action-icon">↔</div>
                 <div class="action-label">Exchange</div>
             </a>
@@ -227,7 +228,7 @@
 
         <div class="transaction-history">
             <div class="transaction-header">Transaction History</div>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=1'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Noah</div>
@@ -235,7 +236,7 @@
                 </div>
                 <div class="transaction-amount received">+10 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=2'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Alex</div>
@@ -243,7 +244,7 @@
                 </div>
                 <div class="transaction-amount sent">-5 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=3'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Jane</div>
@@ -251,7 +252,7 @@
                 </div>
                 <div class="transaction-amount received">+15 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=4'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Alicia</div>
@@ -259,7 +260,7 @@
                 </div>
                 <div class="transaction-amount sent">-50 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=5'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">John</div>
@@ -267,7 +268,7 @@
                 </div>
                 <div class="transaction-amount received">+15 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=6'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Anne</div>
@@ -279,22 +280,12 @@
     </div>
 
     <script>
-        const BalanceApp = {
-            init() {
-                Telegram.WebApp.ready();
-                document.body.style.visibility = '';
-                Telegram.WebApp.setHeaderColor('secondary_bg_color');
-                
-                // Enable back button
-                Telegram.WebApp.BackButton.show();
-                Telegram.WebApp.BackButton.onClick(() => {
-                    window.location.href = 'index.html';
-                });
-            }
-        };
-
         // Initialize app
-        BalanceApp.init();
+        WalletApp.init();
+
+        // Update UI with state
+        document.getElementById('tonBalanceUsd').textContent = WalletApp.formatBalance(WalletApp.state.tonBalance * 2); // Assuming 1 TON = $2
+        document.getElementById('tonBalance').textContent = `${WalletApp.state.tonBalance} TON`;
     </script>
 </body>
 </html> 

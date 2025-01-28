@@ -9,6 +9,7 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script src="js/app.js"></script>
     <script>
         function setThemeClass() {
             document.documentElement.className = Telegram.WebApp.colorScheme;
@@ -213,32 +214,32 @@
         <div class="total-balance">
             <div class="balance-label">Total Balance</div>
             <div class="balance-amount">
-                $250
+                <span id="totalBalance">$250</span>
                 <span class="info-icon">ⓘ</span>
             </div>
         </div>
 
         <div class="action-buttons">
-            <a href="#" class="action-button" onclick="handleSend()">
+            <a href="#" class="action-button" onclick="WalletApp.handleSend(); return false;">
                 <div class="action-icon">↑</div>
                 <div class="action-label">Send</div>
             </a>
-            <a href="#" class="action-button" onclick="handleReceive()">
+            <a href="#" class="action-button" onclick="WalletApp.handleReceive(); return false;">
                 <div class="action-icon">↓</div>
                 <div class="action-label">Receive</div>
             </a>
-            <a href="#" class="action-button" onclick="handleExchange()">
+            <a href="#" class="action-button" onclick="WalletApp.handleExchange(); return false;">
                 <div class="action-icon">↔</div>
                 <div class="action-label">Exchange</div>
             </a>
-            <a href="#" class="action-button" onclick="handleSell()">
+            <a href="#" class="action-button" onclick="WalletApp.handleSell(); return false;">
                 <div class="action-icon">$</div>
                 <div class="action-label">Sell</div>
             </a>
         </div>
 
         <div class="currency-list">
-            <a href="market.html" class="currency-item">
+            <a href="#" class="currency-item" onclick="WalletApp.navigateTo('market.html'); return false;">
                 <div class="currency-icon">T</div>
                 <div class="currency-details">
                     <div class="currency-name">TON Space</div>
@@ -246,7 +247,7 @@
                 </div>
             </a>
 
-            <a href="balance.html" class="currency-item">
+            <a href="#" class="currency-item" onclick="WalletApp.navigateTo('balance.html'); return false;">
                 <div class="currency-icon">T</div>
                 <div class="currency-details">
                     <div class="currency-name">Toncoin</div>
@@ -276,7 +277,7 @@
 
         <div class="transaction-history">
             <div class="transaction-header">Transaction History</div>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=1'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Noah</div>
@@ -284,7 +285,7 @@
                 </div>
                 <div class="transaction-amount received">+10 TON</div>
             </a>
-            <a href="transaction.html" class="transaction-item">
+            <a href="#" class="transaction-item" onclick="WalletApp.navigateTo('transaction.html?id=2'); return false;">
                 <div class="transaction-avatar"></div>
                 <div class="transaction-info">
                     <div class="transaction-name">Alex</div>
@@ -296,77 +297,11 @@
     </div>
 
     <script>
-        const WalletApp = {
-            init() {
-                Telegram.WebApp.ready();
-                document.body.style.visibility = '';
-                Telegram.WebApp.setHeaderColor('secondary_bg_color');
-            },
-
-            handleSend() {
-                Telegram.WebApp.showPopup({
-                    title: 'Send Funds',
-                    message: 'Choose recipient and amount',
-                    buttons: [
-                        {id: 'contact', type: 'default', text: 'Choose Contact'},
-                        {type: 'cancel'}
-                    ]
-                });
-            },
-
-            handleReceive() {
-                Telegram.WebApp.showPopup({
-                    title: 'Receive Funds',
-                    message: 'Share your wallet address',
-                    buttons: [
-                        {id: 'share', type: 'default', text: 'Share Address'},
-                        {type: 'cancel'}
-                    ]
-                });
-            },
-
-            handleExchange() {
-                Telegram.WebApp.showPopup({
-                    title: 'Exchange',
-                    message: 'Convert between currencies',
-                    buttons: [
-                        {id: 'exchange', type: 'default', text: 'Exchange Now'},
-                        {type: 'cancel'}
-                    ]
-                });
-            },
-
-            handleSell() {
-                Telegram.WebApp.showPopup({
-                    title: 'Sell',
-                    message: 'Sell your crypto for cash',
-                    buttons: [
-                        {id: 'sell', type: 'default', text: 'Sell Now'},
-                        {type: 'cancel'}
-                    ]
-                });
-            }
-        };
-
         // Initialize app
         WalletApp.init();
 
-        // Handle action button clicks
-        function handleSend() {
-            WalletApp.handleSend();
-        }
-
-        function handleReceive() {
-            WalletApp.handleReceive();
-        }
-
-        function handleExchange() {
-            WalletApp.handleExchange();
-        }
-
-        function handleSell() {
-            WalletApp.handleSell();
-        }
+        // Update UI with state
+        document.getElementById('totalBalance').textContent = WalletApp.formatBalance(WalletApp.state.currentBalance);
     </script>
 </body>
 </html>

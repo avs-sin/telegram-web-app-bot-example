@@ -9,6 +9,7 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script src="js/app.js"></script>
     <script>
         function setThemeClass() {
             document.documentElement.className = Telegram.WebApp.colorScheme;
@@ -193,7 +194,7 @@
 <body style="visibility: hidden;">
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-button">← Back</a>
+            <a href="#" class="back-button" onclick="WalletApp.navigateBack(); return false;">← Back</a>
             <div class="title">Wallet</div>
         </div>
 
@@ -208,19 +209,19 @@
         <div class="market-subtitle">Buy and sell cryptocurrency without intermediaries</div>
 
         <div class="action-buttons">
-            <a href="#" class="action-button">Buy</a>
-            <a href="#" class="action-button">Sell</a>
+            <a href="#" class="action-button" onclick="WalletApp.handleBuy(); return false;">Buy</a>
+            <a href="#" class="action-button" onclick="WalletApp.handleSell(); return false;">Sell</a>
         </div>
 
         <div class="menu-list">
-            <a href="#" class="menu-item">
+            <a href="#" class="menu-item" onclick="WalletApp.navigateTo('my-ads.html'); return false;">
                 <div class="menu-icon">📝</div>
                 <div class="menu-text">
                     <div class="menu-title">My Ads</div>
                     <div class="menu-subtitle">Manage ads and payment settings</div>
                 </div>
             </a>
-            <a href="#" class="menu-item">
+            <a href="#" class="menu-item" onclick="WalletApp.handleCreateAd(); return false;">
                 <div class="menu-icon">➕</div>
                 <div class="menu-text">
                     <div class="menu-title">Create Ad</div>
@@ -248,22 +249,8 @@
     </div>
 
     <script>
-        const MarketApp = {
-            init() {
-                Telegram.WebApp.ready();
-                document.body.style.visibility = '';
-                Telegram.WebApp.setHeaderColor('secondary_bg_color');
-                
-                // Enable back button
-                Telegram.WebApp.BackButton.show();
-                Telegram.WebApp.BackButton.onClick(() => {
-                    window.location.href = 'index.html';
-                });
-            }
-        };
-
         // Initialize app
-        MarketApp.init();
+        WalletApp.init();
     </script>
 </body>
 </html> 
