@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script>
+        function setThemeClass() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+        }
+        Telegram.WebApp.onEvent('themeChanged', setThemeClass);
+        setThemeClass();
+    </script>
+    <title>Toncoin Balance</title>
+    <style>
+        body {
+            --bg-color: var(--tg-theme-bg-color, #000);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--tg-theme-text-color, #fff);
+            margin: 0;
+            padding: 0;
+            color-scheme: var(--tg-color-scheme);
+        }
+
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-button {
+            color: var(--tg-theme-link-color, #64B5F6);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            margin-right: 12px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .balance-section {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .balance-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--tg-theme-link-color, #64B5F6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .balance-title {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-icon {
+            margin-left: 8px;
+            color: var(--tg-theme-link-color, #64B5F6);
+            font-size: 16px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .balance-ton {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin: 32px 0;
+        }
+
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--tg-theme-text-color, #fff);
+            text-decoration: none;
+            width: 60px;
+        }
+
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--tg-theme-link-color, #64B5F6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .action-label {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .transaction-history {
+            margin-top: 32px;
+        }
+
+        .transaction-header {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .transaction-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 12px;
+            background: #444;
+            overflow: hidden;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+        }
+
+        .transaction-amount {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .transaction-amount.received {
+            color: #4CAF50;
+        }
+
+        .transaction-amount.sent {
+            color: #F44336;
+        }
+    </style>
+</head>
+<body style="visibility: hidden;">
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← Back</a>
+            <div class="title">Wallet</div>
+        </div>
+
+        <div class="balance-section">
+            <div class="balance-icon">T</div>
+            <div class="balance-title">
+                Toncoin Balance
+                <span class="info-icon">ⓘ</span>
+            </div>
+            <div class="balance-amount">$200</div>
+            <div class="balance-ton">100 TON</div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="#" class="action-button">
+                <div class="action-icon">↑</div>
+                <div class="action-label">Send</div>
+            </a>
+            <a href="#" class="action-button">
+                <div class="action-icon">↓</div>
+                <div class="action-label">Receive</div>
+            </a>
+            <a href="#" class="action-button">
+                <div class="action-icon">↔</div>
+                <div class="action-label">Buy</div>
+            </a>
+            <a href="#" class="action-button">
+                <div class="action-icon">↔</div>
+                <div class="action-label">Exchange</div>
+            </a>
+        </div>
+
+        <div class="transaction-history">
+            <div class="transaction-header">Transaction History</div>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">Noah</div>
+                    <div class="transaction-date">Yesterday</div>
+                </div>
+                <div class="transaction-amount received">+10 TON</div>
+            </a>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">Alex</div>
+                    <div class="transaction-date">November 8 at 10:25 AM</div>
+                </div>
+                <div class="transaction-amount sent">-5 TON</div>
+            </a>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">Jane</div>
+                    <div class="transaction-date">November 8 at 6:53 AM</div>
+                </div>
+                <div class="transaction-amount received">+15 TON</div>
+            </a>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">Alicia</div>
+                    <div class="transaction-date">November 8 at 6:53 AM</div>
+                </div>
+                <div class="transaction-amount sent">-50 TON</div>
+            </a>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">John</div>
+                    <div class="transaction-date">November 8 at 5:51 AM</div>
+                </div>
+                <div class="transaction-amount received">+15 TON</div>
+            </a>
+            <a href="transaction.html" class="transaction-item">
+                <div class="transaction-avatar"></div>
+                <div class="transaction-info">
+                    <div class="transaction-name">Anne</div>
+                    <div class="transaction-date">November 8 at 5:51 AM</div>
+                </div>
+                <div class="transaction-amount sent">-1 TON</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const BalanceApp = {
+            init() {
+                Telegram.WebApp.ready();
+                document.body.style.visibility = '';
+                Telegram.WebApp.setHeaderColor('secondary_bg_color');
+                
+                // Enable back button
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(() => {
+                    window.location.href = 'index.html';
+                });
+            }
+        };
+
+        // Initialize app
+        BalanceApp.init();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <script>
+        function setThemeClass() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+        }
+        Telegram.WebApp.onEvent('themeChanged', setThemeClass);
+        setThemeClass();
+    </script>
+    <title>P2P Market</title>
+    <style>
+        body {
+            --bg-color: var(--tg-theme-bg-color, #000);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--tg-theme-text-color, #fff);
+            margin: 0;
+            padding: 0;
+            color-scheme: var(--tg-color-scheme);
+        }
+
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-button {
+            color: var(--tg-theme-link-color, #64B5F6);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            margin-right: 12px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .market-logo {
+            display: flex;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .logo-container {
+            width: 64px;
+            height: 64px;
+            position: relative;
+        }
+
+        .logo-dollar {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .logo-ton {
+            width: 40px;
+            height: 40px;
+            background: var(--tg-theme-link-color, #64B5F6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .market-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .market-subtitle {
+            text-align: center;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            background: var(--tg-theme-button-color, #64B5F6);
+            color: var(--tg-theme-button-text-color, #fff);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .menu-list {
+            background: var(--tg-theme-secondary-bg-color, #1c1c1d);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tg-theme-link-color, #64B5F6);
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .menu-subtitle {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+        }
+
+        .orders-section {
+            margin-top: 24px;
+        }
+
+        .orders-header {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .orders-empty {
+            text-align: center;
+            color: var(--tg-theme-hint-color, #8e8e93);
+            padding: 32px 0;
+        }
+    </style>
+</head>
+<body style="visibility: hidden;">
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← Back</a>
+            <div class="title">Wallet</div>
+        </div>
+
+        <div class="market-logo">
+            <div class="logo-container">
+                <div class="logo-dollar">$</div>
+                <div class="logo-ton">T</div>
+            </div>
+        </div>
+
+        <div class="market-title">P2P Market</div>
+        <div class="market-subtitle">Buy and sell cryptocurrency without intermediaries</div>
+
+        <div class="action-buttons">
+            <a href="#" class="action-button">Buy</a>
+            <a href="#" class="action-button">Sell</a>
+        </div>
+
+        <div class="menu-list">
+            <a href="#" class="menu-item">
+                <div class="menu-icon">📝</div>
+                <div class="menu-text">
+                    <div class="menu-title">My Ads</div>
+                    <div class="menu-subtitle">Manage ads and payment settings</div>
+                </div>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-icon">➕</div>
+                <div class="menu-text">
+                    <div class="menu-title">Create Ad</div>
+                    <div class="menu-subtitle">Create a new P2P advertisement</div>
+                </div>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-icon">🔔</div>
+                <div class="menu-text">
+                    <div class="menu-title">Notifications</div>
+                </div>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-icon">❓</div>
+                <div class="menu-text">
+                    <div class="menu-title">FAQ</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="orders-section">
+            <div class="orders-header">My Orders</div>
+            <div class="orders-empty">Your orders will appear here</div>
+        </div>
+    </div>
+
+    <script>
+        const MarketApp = {
+            init() {
+                Telegram.WebApp.ready();
+                document.body.style.visibility = '';
+                Telegram.WebApp.setHeaderColor('secondary_bg_color');
+                
+                // Enable back button
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(() => {
+                    window.location.href = 'index.html';
+                });
+            }
+        };
+
+        // Initialize app
+        MarketApp.init();
+    </script>
+</body>
+</html> 
