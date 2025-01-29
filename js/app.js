@@ -1,5 +1,10 @@
-const WalletApp = {
-    state: {
+const WalletApp = (function() {
+    let state = {
+        balance: 10000,
+        portfolio: {
+            BTC: { amount: 0.234, value: 42150 },
+            TON: { amount: 100, value: 150 }
+        },
         currentBalance: 250,
         tonBalance: 100,
         transactions: [],
@@ -130,14 +135,14 @@ const WalletApp = {
         }).format(amount);
     },
 
-    handleAssetClick(symbol) {
+    handleAssetClick: function(symbol) {
         // Get the coin data
         const coinData = this.getCoinData(symbol);
         if (coinData) {
-            // Store the selected coin data in localStorage (more reliable than sessionStorage)
+            // Store the selected coin data in localStorage
             localStorage.setItem('selectedCoin', JSON.stringify(coinData));
-            // Navigate to coin detail page
-            window.location.href = 'coin-detail.html';
+            // Navigate to trading page
+            window.location.href = `trading.html?coin=${symbol}`;
         }
     },
 
@@ -160,4 +165,48 @@ const WalletApp = {
         };
         return coins[symbol];
     }
-}; 
+};
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    WalletApp.init();
+    
+    // Add click handlers to all asset cards
+    const assetCards = document.querySelectorAll('.asset-card');
+    assetCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const symbol = this.dataset.symbol || 'BTC'; // Get symbol from data attribute
+            WalletApp.handleAssetClick(symbol);
+        });
+    });
+
+    // Example: Trigger success animation
+    function showSuccessFeedback() {
+        const element = document.getElementById('feedbackElement');
+        element.classList.add('transaction-success');
+        element.addEventListener('animationend', () => {
+            element.classList.remove('transaction-success');
+        });
+    }
+
+    // Example: Show price change indicator
+    function showPriceChange(direction) {
+        const indicator = document.createElement('div');
+        indicator.className = `price-${direction}-indicator`;
+        indicator.textContent = direction === 'rise' ? '▲' : '▼';
+        document.body.appendChild(indicator);
+        indicator.addEventListener('animationend', () => {
+            indicator.remove();
+        });
+    }
+
+    // Example: Focus animation for input
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', () => {
+            input.classList.add('input-focus');
+        });
+        input.addEventListener('blur', () => {
+            input.classList.remove('input-focus');
+        });
+    });
+}); 

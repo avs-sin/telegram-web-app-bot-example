@@ -1,0 +1,33 @@
+<script>
+    // Get the state from localStorage
+    const savedState = JSON.parse(localStorage.getItem('tradingState') || '{}');
+    
+    // Initialize with saved state
+    const initialState = {
+        balance: savedState.balance || 10000,
+        portfolio: savedState.portfolio || {},
+        // ... other state properties
+    };
+    
+    // Function to return to main page
+    function returnToMainPage() {
+        // Save current state
+        const state = {
+            balance: WalletApp.getBalance(),
+            portfolio: WalletApp.getPortfolio()
+        };
+        localStorage.setItem('mainState', JSON.stringify(state));
+        
+        window.location.href = 'index.html';
+    }
+    
+    // Add a back button in the trading page
+    const backButton = document.createElement('button');
+    backButton.textContent = '← Back to Main';
+    backButton.style.position = 'fixed';
+    backButton.style.top = '20px';
+    backButton.style.left = '20px';
+    backButton.style.zIndex = '1000';
+    backButton.onclick = returnToMainPage;
+    document.body.appendChild(backButton);
+</script> 

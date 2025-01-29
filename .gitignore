@@ -1,3 +1,21 @@
-.idea
-.vscode
+# macOS system files
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Dependency directories
+node_modules/
+
+# Build output (if applicable)
+dist/
+build/
+
+# Environment files
+.env
+
 frp

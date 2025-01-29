@@ -1,3 +1,39 @@
+# TON Paper Trading App
+
+## Recent Updates
+
+### UI/UX Improvements
+- Enhanced typography and readability
+- Added more sophisticated glow effects
+- Refined color palette based on Telegram's design language
+- Improved interactive element animations
+- Added more contextual feedback animations
+
+### Design Refinements
+- Improved balance card design
+- Added quick guide section
+- Enhanced button and card interactions
+- More consistent spacing and typography
+- Added utility classes for text and spacing
+
+### Performance Optimizations
+- Reduced unnecessary animations
+- Improved transition performance
+- Added more meaningful micro-interactions
+
+## Getting Started
+1. Clone the repository
+2. Open `index.html` in a modern browser
+3. Ensure you have the latest Telegram Web App SDK
+
+## Dependencies
+- Telegram Web App SDK
+- Inter Font (Google Fonts)
+- Font Awesome
+
+## Contributing
+Please read the contributing guidelines before making pull requests.
+
 # Telegram Web App Wallet Example
 
 A simple Telegram Web App that demonstrates a cryptocurrency wallet interface. This example shows how to create a beautiful and functional wallet interface that can be embedded within Telegram.
