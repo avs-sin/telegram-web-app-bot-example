@@ -9,6 +9,8 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="js/crypto-service.js"></script>
+    <script src="js/portfolio-service.js"></script>
     <script src="js/app.js"></script>
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -182,6 +184,7 @@
             margin: 16px 0;
             position: relative;
             display: inline-block;
+            transition: color 0.3s ease;
         }
 
         .balance-amount::after {
@@ -226,6 +229,15 @@
                          0 0 10px rgba(51,144,236,0.2),
                          0 0 20px rgba(51,144,236,0.1);
             color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .stat-value.positive {
+            color: var(--success-color);
+        }
+
+        .stat-value.negative {
+            color: var(--danger-color);
         }
 
         .value-change {
@@ -2319,152 +2331,581 @@
         .modal-glow {
             box-shadow: 0 0 30px rgba(51,144,236,0.4);
         }
+
+        .quick-guide-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+            border: 2px solid rgba(51,144,236,0.2);
+        }
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .guide-icon {
+            font-size: 24px;
+        }
+
+        .guide-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .guide-step.active {
+            background: rgba(51,144,236,0.1);
+            border: 1px solid var(--primary-color);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .tooltip-container {
+            position: relative;
+        }
+
+        .tooltip-icon {
+            font-size: 14px;
+            margin-left: 4px;
+            cursor: help;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .practice-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(46,189,89,0.1);
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .trading-hint {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(51,144,236,0.1);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .hint-icon {
+            font-size: 20px;
+        }
+
+        .hint-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between; /* Changed from gap */
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .guide-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guide-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .guide-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-color);
+        }
+
+        .guide-card-exit {
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20px);
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        /* 1. Navigation & Layout */
+        .bottom-nav {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          background: var(--card-bg);
+          padding: 8px 0;
+          border-top: 1px solid var(--border-color);
+        }
+
+        .nav-item {
+          text-align: center;
+          padding: 12px;
+          transition: all 0.2s ease;
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+        }
+
+        .nav-item.active {
+          color: var(--primary-color);
+          transform: translateY(-4px);
+        }
+
+        .fab {
+          position: fixed;
+          bottom: 72px;
+          right: 16px;
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab:active {
+          transform: scale(0.95);
+        }
+
+        /* 2. Lesson Structure */
+        .lesson-card {
+          padding: 16px;
+          margin: 16px 0;
+          background: var(--card-bg);
+          border-left: 4px solid var(--primary-color);
+          border-radius: 12px;
+          transition: transform 0.2s ease;
+        }
+
+        .lesson-card:hover {
+          transform: translateY(-2px);
+        }
+
+        .progress-bar {
+          height: 4px;
+          background: rgba(255,255,255,0.1);
+          margin-top: 12px;
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+          width: 45%;
+          transition: width 0.3s ease;
+        }
+
+        /* 3. Improved Market Ticker */
+        .market-ticker {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 8px;
+          margin: 16px 0;
+        }
+
+        .ticker-item {
+          padding: 12px;
+          text-align: center;
+          background: var(--card-bg);
+          border-radius: 8px;
+          transition: all 0.2s ease;
+        }
+
+        .ticker-change {
+          font-weight: 500;
+        }
+
+        .ticker-change.positive {
+          color: #34c759;
+        }
+
+        .ticker-change.negative {
+          color: #ff3b30;
+        }
+
+        /* 4. Enhanced Chat Bubbles */
+        .chat-bubble {
+          max-width: 85%;
+          padding: 12px 16px;
+          margin: 8px 0;
+          background: var(--card-bg);
+          border-radius: 18px;
+          position: relative;
+        }
+
+        .chat-bubble::after {
+          content: '';
+          position: absolute;
+          bottom: -8px;
+          left: 20px;
+          border-width: 8px 8px 0;
+          border-style: solid;
+          border-color: var(--card-bg) transparent transparent;
+        }
+
+        /* 5. Animated Streak Counter */
+        .streak-counter {
+          position: fixed;
+          top: 16px;
+          right: 16px;
+          padding: 8px 16px;
+          background: linear-gradient(45deg, #ff9500, #ffcc00);
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          animation: streak-pulse 2s infinite;
+        }
+
+        @keyframes streak-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+
+        /* 6. Micro-interactions */
+        .button-hover {
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .button-hover:active {
+          transform: scale(0.96);
+        }
+
+        .loading-dots::after {
+          content: '...';
+          animation: loading-dots 1.5s infinite;
+        }
+
+        @keyframes loading-dots {
+          0% { content: ''; }
+          25% { content: '.'; }
+          50% { content: '..'; }
+          75% { content: '...'; }
+        }
     </style>
 </head>
 <body style="visibility: hidden;">
-    <div class="container">
-        <!-- Simplified Header -->
-        <div class="header">
-            <div class="profile-section">
-                <div class="header-titles">
-                    <div class="header-title">TON Paper Trading</div>
-                    <div class="header-subtitle">Practice Portfolio • $10,000.00</div>
-                </div>
-            </div>
-        </div>
+    <!-- Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active">🏠 Home</div>
+        <div class="nav-item">📚 Learn</div>
+        <div class="nav-item">💹 Market</div>
+        <div class="nav-item">👤 Profile</div>
+    </div>
+    
+    <button class="fab">💡</button>
 
-        <!-- Add this right after the header -->
-        <div class="quick-guide">
+    <!-- Polished Lesson Card -->
+    <div class="lesson-card">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Basic Trading Concepts</h3>
+            <span class="text-sm text-secondary">45% Complete</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <button class="button-hover mt-4 w-full bg-primary text-white py-2 rounded-lg">
+            Continue Lesson
+        </button>
+    </div>
+
+    <!-- Enhanced Market Ticker -->
+    <div class="market-ticker">
+        <div class="ticker-item">
+            <div class="font-medium">TON/USD</div>
+            <div class="ticker-change positive">$1.50 ▲2%</div>
+        </div>
+        <div class="ticker-item">
+            <div class="font-medium">BTC/USD</div>
+            <div class="ticker-change negative">$42k ▼1.2%</div>
+        </div>
+    </div>
+
+    <!-- Add after the header section -->
+    <div class="quick-guide-card" id="quickGuideCard">
+        <div class="guide-header">
+            <div class="guide-left">
+                <div class="guide-icon">🎓</div>
+                <div class="guide-title">New to Trading?</div>
+            </div>
+            <button class="guide-close" onclick="closeGuide()">✕</button>
+        </div>
+        <div class="guide-steps">
             <div class="guide-step active">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                    <div class="step-title">Choose what to buy</div>
-                    <div class="step-hint">Tap Bitcoin or TON below 👇</div>
+                    <div class="step-title">Watch the Market</div>
+                    <div class="step-description">Check the price chart and stats above to understand market movement</div>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Choose Buy or Sell</div>
+                    <div class="step-description">Buy if you think price will go up, Sell if you think it will go down</div>
+                </div>
+            </div>
+            <div class="guide-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Enter Amount</div>
+                    <div class="step-description">Start small! You can use the % buttons to quickly set amounts</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Combined Balance and Trading Section -->
-        <div class="balance-card">
-            <div class="balance-header">
-                <div class="balance-label">Portfolio Value</div>
-                <div class="time-selector">
-                    <button class="time-option active">24H</button>
-                    <button class="time-option">7D</button>
-                    <button class="time-option">1M</button>
-                </div>
+    <!-- Replace the balance-card section with a market overview -->
+    <div class="balance-card">
+        <div class="balance-header">
+            <div class="balance-label">TON/USD</div>
+            <div class="time-selector">
+                <button class="time-option active">1H</button>
+                <button class="time-option">24H</button>
+                <button class="time-option">7D</button>
             </div>
-            <div class="balance-amount">$10,240.00</div>
-            <div class="balance-chart" id="portfolioChart"></div>
-            <div class="balance-stats">
-                <div class="stat-item">
-                    <div class="stat-label">24H Change</div>
-                    <div class="stat-value positive">+2.4%</div>
+        </div>
+        <div class="balance-amount">$1.50</div>
+        <div class="balance-change positive">+2.4%</div>
+        <div class="balance-chart" id="priceChart"></div>
+        <div class="balance-stats">
+            <div class="stat-item tooltip-container">
+                <div class="stat-label">24H High
+                    <span class="tooltip-icon">ℹ️</span>
+                    <div class="tooltip">Highest price in the last 24 hours</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-label">All Time High</div>
-                    <div class="stat-value">$10,500.00</div>
+                <div class="stat-value">$1.55</div>
+            </div>
+            <div class="stat-item tooltip-container">
+                <div class="stat-label">24H Low
+                    <span class="tooltip-icon">ℹ️</span>
+                    <div class="tooltip">Lowest price in the last 24 hours</div>
                 </div>
+                <div class="stat-value">$1.45</div>
+            </div>
+            <div class="stat-item tooltip-container">
+                <div class="stat-label">Volume
+                    <span class="tooltip-icon">ℹ️</span>
+                    <div class="tooltip">Total amount of TON traded in the last 24 hours</div>
+                </div>
+                <div class="stat-value">$2.5M</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add a practice mode toggle -->
+    <div class="practice-mode-toggle">
+        <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+        </label>
+        <span class="practice-label">Practice Mode (Risk-Free Trading)</span>
+    </div>
+
+    <!-- Replace the trading section with a new order form -->
+    <div class="trading-section">
+        <div class="trading-hint">
+            <div class="hint-icon">💡</div>
+            <div class="hint-text">Start with small amounts to practice. You can't lose real money in practice mode!</div>
+        </div>
+        <div class="trade-type-toggle">
+            <button class="trade-type active" onclick="setTradeType('buy')">Buy</button>
+            <button class="trade-type" onclick="setTradeType('sell')">Sell</button>
+        </div>
+
+        <div class="tg-form-row">
+            <label class="tg-form-label">Amount (TON)</label>
+            <div class="amount-input-group">
+                <input type="number" 
+                       class="tg-input" 
+                       id="tradeAmount" 
+                       placeholder="0.00"
+                       step="0.01"
+                       oninput="updateTradePreview()">
+                <span class="input-currency">TON</span>
+            </div>
+            <div class="quick-amount-selector">
+                <button onclick="setAmountPercentage(25)">25%</button>
+                <button onclick="setAmountPercentage(50)">50%</button>
+                <button onclick="setAmountPercentage(75)">75%</button>
+                <button onclick="setAmountPercentage(100)">100%</button>
             </div>
         </div>
 
-        <!-- Add after the balance-card section -->
-        <div class="achievements-bar">
-            <div class="achievement-pill">
-                <span class="achievement-icon">🎯</span>
-                <span class="achievement-text">Trading Streak: <b>3 days</b></span>
+        <div class="trade-preview">
+            <div class="preview-row">
+                <span class="preview-label">Price</span>
+                <span class="preview-value" id="tradePrice">$1.50</span>
             </div>
-            <div class="achievement-pill">
-                <span class="achievement-icon">⭐</span>
-                <span class="achievement-text">Level 2 Trader</span>
+            <div class="preview-row">
+                <span class="preview-label">Total Cost</span>
+                <span class="preview-value" id="totalCost">$0.00</span>
             </div>
-            <div class="level-progress">
-                <div class="level-bar" style="width: 65%"></div>
+            <div class="preview-row">
+                <span class="preview-label">Available Balance</span>
+                <span class="preview-value" id="availableBalance">$10,000.00</span>
             </div>
         </div>
 
-        <!-- Add to the trading section, before the controls -->
-        <div class="trading-challenges">
-            <div class="challenge-card active">
-                <div class="challenge-header">
-                    <span class="challenge-icon">🎯</span>
-                    <span class="challenge-title">Daily Challenge</span>
-                    <span class="challenge-reward">+100 XP</span>
-                </div>
-                <div class="challenge-progress">
-                    <div class="challenge-text">Make 3 successful trades</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 33%"></div>
-                        <span class="progress-text">1/3</span>
+        <button class="execute-trade-button" onclick="executeTrade()">
+            Buy TON
+        </button>
+    </div>
+
+    <!-- Add order history section -->
+    <div class="section-title">Order History</div>
+    <div class="trade-history">
+        <div class="history-tabs">
+            <button class="tab active">Open Orders</button>
+            <button class="tab">Filled Orders</button>
+        </div>
+        
+        <div class="trades-list" id="tradesList">
+            <!-- Sample trade history item -->
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-icon">💎</div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Bought TON</div>
+                        <div class="transaction-date">100 TON @ $1.48</div>
                     </div>
+                    <div class="transaction-amount positive">+$148.00</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Simplify the trading section -->
-        <div class="trading-section">
-            <!-- Simple Asset Selection -->
-            <div class="coin-buttons">
-                <button class="coin-button" onclick="selectCoin('TON')">
-                    <div class="coin-icon">💎</div>
-                    <div class="coin-info">
-                        <div class="coin-name">TON</div>
-                        <div class="coin-price">$1.50</div>
-                    </div>
-                </button>
-                <button class="coin-button" onclick="selectCoin('BTC')">
-                    <div class="coin-icon">₿</div>
-                    <div class="coin-info">
-                        <div class="coin-name">Bitcoin</div>
-                        <div class="coin-price">$42,000</div>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Simplified Amount Input -->
-            <div class="amount-section">
-                <div class="amount-label">How much do you want to spend?</div>
-                <div class="amount-presets">
-                    <button onclick="setAmount(10)">$10</button>
-                    <button onclick="setAmount(50)">$50</button>
-                    <button onclick="setAmount(100)">$100</button>
-                    <button onclick="setAmount(500)">$500</button>
-                </div>
-                <div class="amount-input-wrapper">
-                    <span class="dollar-sign">$</span>
-                    <input type="number" 
-                           id="amountInput" 
-                           placeholder="Enter amount"
-                           oninput="updatePreview()">
-                </div>
-            </div>
-
-            <!-- Clear Preview -->
-            <div class="preview-box">
-                <div class="preview-title">You will receive:</div>
-                <div class="preview-amount" id="previewAmount">0.00 BTC</div>
-                <div class="preview-hint">Current price: $42,000 per Bitcoin</div>
-            </div>
-
-            <!-- Simple Action Button -->
-            <button class="action-button" onclick="executeTrade()">
-                <span class="button-icon">💎</span>
-                <span class="button-text">Buy TON</span>
-            </button>
-        </div>
-
-        <!-- Trade History Section -->
-        <div class="trade-history">
-            <div class="history-header">
-                <div class="history-title">Trade History</div>
-                <div class="history-tabs">
-                    <button class="tab active" data-tab="open">Open</button>
-                    <button class="tab" data-tab="closed">Closed</button>
-                </div>
-            </div>
-            
-            <div class="trades-list" id="tradesList">
-                <!-- Trade history items will be populated here -->
             </div>
         </div>
     </div>
@@ -2614,11 +3055,7 @@
 
         function updateBalanceDisplay(newValue) {
             const balanceElement = document.querySelector('.balance-amount');
-            balanceElement.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                balanceElement.style.transform = 'scale(1)';
-                balanceElement.textContent = newValue;
-            }, 300);
+            balanceElement.textContent = newValue;
         }
 
         document.querySelectorAll('.action-button').forEach(btn => {
@@ -2675,32 +3112,29 @@
         let isIncreasing = true;
 
         function simulateMarketMovement() {
-            const fluctuation = Math.random() * 200 - 100; // Random between -100 and +100
-            currentBalance += fluctuation;
-            
             const balanceElement = document.querySelector('.balance-amount');
-            const figureElement = document.querySelector('.balance-figure');
-            const changeElement = document.querySelector('.change-amount');
-            const indicatorElement = document.querySelector('.balance-change-indicator');
+            const statValue = document.querySelector('.stat-value');
+            const currentValue = parseFloat(balanceElement.textContent.replace('$', '').replace(',', ''));
             
-            // Add fluctuation animation
-            balanceElement.classList.add('fluctuate');
+            // Random fluctuation between -0.5% and +0.5%
+            const percentageChange = (Math.random() - 0.5) * 1;
+            const valueChange = currentValue * (percentageChange / 100);
+            const newValue = currentValue + valueChange;
             
-            // Update values
-            figureElement.textContent = `$${Math.abs(currentBalance).toFixed(2)}`;
-            changeElement.textContent = `${fluctuation >= 0 ? '+' : '-'}$${Math.abs(fluctuation).toFixed(2)}`;
-            changeElement.style.color = fluctuation >= 0 ? '#00D878' : '#FE1040';
-            indicatorElement.textContent = fluctuation >= 0 ? '▲' : '▼';
-            indicatorElement.style.color = fluctuation >= 0 ? '#00D878' : '#FE1040';
+            // Update balance with animation
+            balanceElement.textContent = `$${newValue.toFixed(2)}`;
             
-            // Remove animation class after completion
-            setTimeout(() => {
-                balanceElement.classList.remove('fluctuate');
-            }, 800);
+            // Update percentage with color
+            const percentageFormatted = percentageChange >= 0 ? 
+                `+${percentageChange.toFixed(2)}%` : 
+                `${percentageChange.toFixed(2)}%`;
+            
+            statValue.textContent = percentageFormatted;
+            statValue.className = `stat-value ${percentageChange >= 0 ? 'positive' : 'negative'}`;
         }
 
-        // Simulate market changes every 3-8 seconds randomly
-        setInterval(simulateMarketMovement, Math.random() * 5000 + 3000);
+        // Start the simulation with a random interval between 2-4 seconds
+        setInterval(simulateMarketMovement, 3000);
 
         // Add smooth transitions to the theme indicator
         document.getElementById('themeIndicator').addEventListener('click', () => {
@@ -3039,6 +3473,23 @@
 
         // Initialize
         document.querySelector('.action-button').style.display = 'none';
+
+        function closeGuide() {
+            const guideCard = document.getElementById('quickGuideCard');
+            guideCard.classList.add('guide-card-exit');
+            // Store in localStorage so it stays hidden on refresh
+            localStorage.setItem('tradingGuideHidden', 'true');
+            setTimeout(() => {
+                guideCard.style.display = 'none';
+            }, 300);
+        }
+
+        // Check if guide should be hidden on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('tradingGuideHidden') === 'true') {
+                document.getElementById('quickGuideCard').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

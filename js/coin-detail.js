@@ -18,7 +18,7 @@ const CoinDetail = {
                 this.updateUI(coin);
             } catch (e) {
                 console.error('Error loading coin data:', e);
-                // Redirect back to main page if there's an error
+                // Redirect back to main page
                 window.location.href = 'index.html';
             }
         } else {
@@ -82,4 +82,4 @@ const CoinDetail = {
             }, 5000);
         }
     }
-}; 
+};
