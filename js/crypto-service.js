@@ -27,6 +27,14 @@ const CryptoService = {
 
     getPrice(coinId) {
         return this.prices[coinId] || null;
+    },
+
+    getCurrentPrice: function(asset) {
+        const prices = {
+            'BTC': 42000,
+            'TON': 1.50
+        };
+        return prices[asset] || 0;
     }
 };
 

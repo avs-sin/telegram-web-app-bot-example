@@ -1,30 +1,201 @@
 const WalletApp = {
+    state: {
+        balance: 10000, // Initial balance
+        portfolio: {
+            positions: {}
+        }
+    },
+
     // Initialize the application
     async init() {
-        // Initialize Telegram Web App
-        Telegram.WebApp.ready();
-        document.body.style.visibility = '';
-        Telegram.WebApp.setHeaderColor('secondary_bg_color');
+        try {
+            // Check if Telegram WebApp is available
+            if (typeof Telegram === 'undefined' || !Telegram.WebApp) {
+                console.error('Telegram WebApp is not available');
+                return;
+            }
 
-        // Initialize services
-        await CryptoService.init();
-        PortfolioService.init();
+            // Initialize Telegram Web App
+            Telegram.WebApp.ready();
+            document.body.style.visibility = '';
+            Telegram.WebApp.setHeaderColor('secondary_bg_color');
 
-        // Setup back button if not on main page
-        if (!this.isMainPage()) {
-            Telegram.WebApp.BackButton.show();
-            Telegram.WebApp.BackButton.onClick(() => {
-                this.navigateBack();
+            // Load saved state
+            this.loadState();
+
+            // Initialize services
+            if (typeof CryptoService !== 'undefined') {
+                await CryptoService.init();
+            }
+            if (typeof PortfolioService !== 'undefined') {
+                PortfolioService.init();
+            }
+
+            // Setup back button if not on main page
+            if (!this.isMainPage()) {
+                Telegram.WebApp.BackButton.show();
+                Telegram.WebApp.BackButton.onClick(() => {
+                    this.navigateBack();
+                });
+            } else {
+                Telegram.WebApp.BackButton.hide();
+            }
+
+            // Set up event listeners
+            this.setupEventListeners();
+            
+            // Initial UI update
+            this.updateUI();
+        } catch (error) {
+            console.error('Error initializing WalletApp:', error);
+            this.showError('Failed to initialize application');
+        }
+    },
+
+    // Load saved state from localStorage
+    loadState() {
+        try {
+            const savedState = localStorage.getItem('walletAppState');
+            if (savedState) {
+                this.state = JSON.parse(savedState);
+            }
+        } catch (error) {
+            console.error('Error loading state:', error);
+        }
+    },
+
+    // Save current state to localStorage
+    saveState() {
+        try {
+            localStorage.setItem('walletAppState', JSON.stringify(this.state));
+        } catch (error) {
+            console.error('Error saving state:', error);
+        }
+    },
+
+    // Get current balance
+    getBalance() {
+        return this.state.balance;
+    },
+
+    // Get portfolio
+    getPortfolio() {
+        return this.state.portfolio;
+    },
+
+    // Update balance
+    updateBalance(amount) {
+        try {
+            this.state.balance += amount;
+            if (this.state.balance < 0) {
+                this.state.balance = 0;
+            }
+            this.saveState();
+            this.updateUI();
+        } catch (error) {
+            console.error('Error updating balance:', error);
+            this.showError('Failed to update balance');
+        }
+    },
+
+    // Handle buy overlay close
+    handleCloseBuy() {
+        try {
+            const overlay = document.getElementById('buyOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error closing buy overlay:', error);
+        }
+    },
+
+    // Handle asset selection
+    selectAsset(asset) {
+        try {
+            document.querySelectorAll('.asset-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            const selectedOption = document.querySelector(`.asset-option[data-asset="${asset}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('active');
+            }
+            this.updateBuyPreview();
+        } catch (error) {
+            console.error('Error selecting asset:', error);
+        }
+    },
+
+    // Update buy preview
+    updateBuyPreview() {
+        try {
+            const amount = parseFloat(document.getElementById('buyAmount')?.value) || 0;
+            const totalCostElement = document.getElementById('totalCost');
+            if (totalCostElement) {
+                totalCostElement.textContent = `$${amount.toFixed(2)}`;
+            }
+        } catch (error) {
+            console.error('Error updating buy preview:', error);
+        }
+    },
+
+    // Set maximum amount
+    setMaxAmount() {
+        try {
+            const balance = this.getBalance();
+            const amountInput = document.getElementById('buyAmount');
+            if (amountInput) {
+                amountInput.value = balance.toFixed(2);
+                this.updateBuyPreview();
+            }
+        } catch (error) {
+            console.error('Error setting max amount:', error);
+        }
+    },
+
+    // Execute buy
+    executeBuy() {
+        try {
+            const amount = parseFloat(document.getElementById('buyAmount')?.value) || 0;
+            if (amount <= 0) {
+                this.showError('Please enter a valid amount');
+                return;
+            }
+            if (amount > this.getBalance()) {
+                this.showError('Insufficient balance');
+                return;
+            }
+
+            // Process the buy
+            this.updateBalance(-amount);
+            this.handleCloseBuy();
+            this.showSuccess('Purchase successful!');
+        } catch (error) {
+            console.error('Error executing buy:', error);
+            this.showError('Failed to complete purchase');
+        }
+    },
+
+    // Show error message
+    showError(message) {
+        if (Telegram.WebApp) {
+            Telegram.WebApp.showAlert(message);
+        } else {
+            alert(message);
+        }
+    },
+
+    // Show success message
+    showSuccess(message) {
+        if (Telegram.WebApp) {
+            Telegram.WebApp.showPopup({
+                title: 'Success',
+                message: message,
+                buttons: [{type: 'ok'}]
             });
         } else {
-            Telegram.WebApp.BackButton.hide();
+            alert(message);
         }
-
-        // Set up event listeners
-        this.setupEventListeners();
-        
-        // Initial UI update
-        this.updateUI();
     },
 
     // Set up event listeners
@@ -342,6 +513,33 @@ const WalletApp = {
             }
         }
         this.updatePriceDisplays(priceData);
+    },
+
+    init: function() {
+        console.log('WalletApp initialized');
+        this.portfolio = {
+            positions: {}
+        };
+    },
+
+    getBalance: function() {
+        return 10000.00;
+    },
+
+    getPortfolio: function() {
+        return this.portfolio.positions;
+    },
+
+    updateBalance: function(amount) {
+        console.log(`Balance updated: ${amount}`);
+    },
+
+    updatePortfolio: function(asset, amount) {
+        if (!this.portfolio.positions[asset]) {
+            this.portfolio.positions[asset] = { amount: 0 };
+        }
+        this.portfolio.positions[asset].amount += amount;
+        console.log(`Updated ${asset} portfolio: ${this.portfolio.positions[asset].amount}`);
     }
 };
 

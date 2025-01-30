@@ -214,6 +214,11 @@ const PortfolioService = {
         }
         
         return totalPL;
+    },
+    
+    // Placeholder for portfolio-related functions
+    getPortfolioValue: function() {
+        return 10000.00;
     }
 };
 

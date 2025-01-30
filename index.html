@@ -2996,7 +2996,157 @@
 
     <script>
         document.body.style.visibility = '';
-        WalletApp.init();
+        
+        // Initialize app only once
+        document.addEventListener('DOMContentLoaded', () => {
+            WalletApp.init();
+            initializeEventHandlers();
+            
+            // Hide loading skeleton
+            setTimeout(() => {
+                document.getElementById('loadingSkeleton').style.display = 'none';
+            }, 800);
+            
+            // Check if guide should be hidden
+            if (localStorage.getItem('tradingGuideHidden') === 'true') {
+                document.getElementById('quickGuideCard').style.display = 'none';
+            }
+        });
+
+        // Initialize all event handlers
+        function initializeEventHandlers() {
+            // Navigation handlers
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', handleNavigation);
+            });
+
+            // Trade type handlers
+            document.querySelectorAll('.trade-type').forEach(btn => {
+                btn.addEventListener('click', () => setTradeType(btn.dataset.type));
+            });
+
+            // Amount input handler
+            const tradeAmount = document.getElementById('tradeAmount');
+            if (tradeAmount) {
+                tradeAmount.addEventListener('input', updateTradePreview);
+            }
+
+            // Quick amount selector handlers
+            document.querySelectorAll('.quick-amount-selector button').forEach(btn => {
+                btn.addEventListener('click', () => setAmountPercentage(parseInt(btn.textContent)));
+            });
+        }
+
+        function handleNavigation(event) {
+            const pages = {
+                'Home': 'index.html',
+                'Learn': 'learn.html',
+                'Market': 'market.html',
+                'Profile': 'profile.html'
+            };
+            
+            const pageName = event.target.textContent.trim().split(' ')[1];
+            if (pages[pageName]) {
+                window.location.href = pages[pageName];
+            }
+        }
+
+        function setTradeType(type) {
+            try {
+                document.querySelectorAll('.trade-type').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`.trade-type[data-type="${type}"]`).classList.add('active');
+                updateTradePreview();
+            } catch (error) {
+                console.error('Error setting trade type:', error);
+            }
+        }
+
+        function updateTradePreview() {
+            try {
+                const amount = parseFloat(document.getElementById('tradeAmount')?.value) || 0;
+                const priceElement = document.getElementById('tradePrice');
+                const totalCostElement = document.getElementById('totalCost');
+                const price = parseFloat(priceElement?.textContent?.replace('$', '') || '0');
+                
+                if (totalCostElement) {
+                    totalCostElement.textContent = `$${(amount * price).toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Error updating trade preview:', error);
+            }
+        }
+
+        function setAmountPercentage(percent) {
+            try {
+                const type = document.querySelector('.trade-type.active')?.dataset.type;
+                const balance = WalletApp.getBalance();
+                const amount = (balance * (percent / 100)).toFixed(2);
+                
+                const amountInput = document.getElementById('tradeAmount');
+                if (amountInput) {
+                    amountInput.value = amount;
+                    updateTradePreview();
+                }
+            } catch (error) {
+                console.error('Error setting amount percentage:', error);
+            }
+        }
+
+        function closeGuide() {
+            try {
+                const guideCard = document.getElementById('quickGuideCard');
+                if (guideCard) {
+                    guideCard.classList.add('guide-card-exit');
+                    localStorage.setItem('tradingGuideHidden', 'true');
+                    setTimeout(() => {
+                        guideCard.style.display = 'none';
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Error closing guide:', error);
+            }
+        }
+
+        // Market simulation
+        let currentPrice = 1.50;
+        
+        function simulateMarketMovement() {
+            try {
+                const percentageChange = (Math.random() - 0.5) * 1;
+                const priceChange = currentPrice * (percentageChange / 100);
+                currentPrice += priceChange;
+                
+                const priceElement = document.querySelector('.balance-amount');
+                const changeElement = document.querySelector('.balance-change');
+                
+                if (priceElement) {
+                    priceElement.textContent = `$${currentPrice.toFixed(2)}`;
+                }
+                
+                if (changeElement) {
+                    changeElement.textContent = `${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(2)}%`;
+                    changeElement.className = `balance-change ${percentageChange >= 0 ? 'positive' : 'negative'}`;
+                }
+            } catch (error) {
+                console.error('Error simulating market movement:', error);
+            }
+        }
+
+        // Start market simulation
+        setInterval(simulateMarketMovement, 3000);
+
+        // Cleanup function
+        window.addEventListener('beforeunload', () => {
+            // Clear any intervals
+            clearInterval(simulateMarketMovement);
+            
+            // Remove event listeners
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.removeEventListener('click', handleNavigation);
+            });
+        });
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -3490,6 +3640,27 @@
                 document.getElementById('quickGuideCard').style.display = 'none';
             }
         });
+
+        // Add validation to portfolio updates
+        WalletApp.updatePortfolio = function(asset, amount) {
+            if (typeof amount !== 'number' || isNaN(amount)) {
+                console.error('Invalid amount:', amount);
+                return;
+            }
+            
+            if (!this.portfolio.positions[asset]) {
+                this.portfolio.positions[asset] = { amount: 0 };
+            }
+            
+            this.portfolio.positions[asset].amount += amount;
+            
+            // Prevent negative balances
+            if (this.portfolio.positions[asset].amount < 0) {
+                this.portfolio.positions[asset].amount = 0;
+            }
+            
+            localStorage.setItem('portfolio', JSON.stringify(this.portfolio));
+        };
     </script>
 </body>
 </html>
