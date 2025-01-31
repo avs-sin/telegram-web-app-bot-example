@@ -8,256 +8,755 @@
     <meta name="MobileOptimized" content="176" />
     <meta name="HandheldFriendly" content="True" />
     <meta name="robots" content="noindex,nofollow" />
-    <script src="https://telegram.org/js/telegram-web-app.js?2"></script>
+    <title>Market - Crypto Paper Trading</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="TelegramUI/src/styles/main.css">
     <script src="js/app.js"></script>
-    <script>
-        function setThemeClass() {
-            document.documentElement.className = Telegram.WebApp.colorScheme;
-        }
-        Telegram.WebApp.onEvent('themeChanged', setThemeClass);
-        setThemeClass();
-    </script>
-    <title>P2P Market</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-color: #0088cc;
-            --success-color: #00a884;
-            --danger-color: #f8424e;
-            --border-radius: 10px;
+            --tg-theme-bg-color: #000000; /* Pure black background */
+            --tg-theme-text-color: #ffffff; /* Bright white text color */
+            --tg-theme-hint-color: #888888; /* Subtle hint color */
+            --tg-theme-link-color: #00bcd4; /* Vibrant blue link color */
+            --tg-theme-button-color: #00bcd4; /* Vibrant blue button color */
+            --tg-theme-button-text-color: #ffffff; /* White button text */
+            --tg-theme-secondary-bg-color: #121212; /* Dark secondary background */
         }
 
         body {
-            --bg-color: var(--tg-theme-bg-color, #000);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--tg-theme-text-color, #fff);
             margin: 0;
             padding: 0;
-            color-scheme: var(--tg-color-scheme);
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 60px;
         }
 
         .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
+            padding: 0 12px; /* Match padding with index.html */
         }
 
+        /* Header Section */
         .header {
+            padding: 16px 12px;
+            background: #000000; /* Solid black header */
+            border-bottom: 1px solid #333333; /* Subtle border */
+        }
+
+        .header-title {
+            font-size: 26px; /* Modern font size */
+            font-weight: 700; /* Modern font weight */
+            color: var(--tg-theme-text-color);
+            margin: 0;
+            text-shadow: none; /* Remove text shadow for cleaner look */
+        }
+
+        /* Market Categories */
+        .category-tabs {
             display: flex;
+            gap: 8px;
+            padding: 16px 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 0;
+            margin-bottom: 16px;
+        }
+
+        .category-tab {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+            white-space: nowrap;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 188, 212, 0.1);
+            background: rgba(18, 18, 18, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .category-tab.active {
+            background: linear-gradient(45deg, #00bcd4, #0097a7);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+        }
+
+        .category-tab:hover {
+            background-color: rgba(0, 188, 212, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Trending Section */
+        .trending-section {
+            margin: 20px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color);
+        }
+
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-bottom: 24px;
         }
 
-        .back-button {
-            color: var(--tg-theme-link-color, #64B5F6);
-            text-decoration: none;
+        .trending-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .trending-header {
             display: flex;
             align-items: center;
-            font-size: 16px;
-            margin-right: 12px;
-        }
-
-        .title {
-            font-size: 16px;
-            font-weight: 500;
-            flex-grow: 1;
-            text-align: center;
-        }
-
-        .market-logo {
-            display: flex;
-            justify-content: center;
-            margin: 32px 0;
-        }
-
-        .logo-container {
-            width: 64px;
-            height: 64px;
-            position: relative;
-        }
-
-        .logo-dollar {
-            width: 40px;
-            height: 40px;
-            background: #4CAF50;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .logo-ton {
-            width: 40px;
-            height: 40px;
-            background: var(--tg-theme-link-color, #64B5F6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        }
-
-        .market-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
+            gap: 8px;
             margin-bottom: 8px;
         }
 
-        .market-subtitle {
-            text-align: center;
-            color: var(--tg-theme-hint-color, #8e8e93);
-            font-size: 14px;
-            margin-bottom: 32px;
+        .coin-icon {
+            font-size: 20px;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-
-        .action-button {
-            flex: 1;
-            padding: 12px;
-            border-radius: var(--border-radius);
-            background: var(--primary-color);
-            color: var(--tg-theme-button-text-color, #fff);
-            text-align: center;
-            text-decoration: none;
+        .coin-name {
+            font-size: 15px;
             font-weight: 500;
         }
 
-        .menu-list {
-            background: var(--tg-theme-secondary-bg-color, #1c1c1d);
-            border-radius: 12px;
-            overflow: hidden;
+        .coin-symbol {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
         }
 
-        .menu-item {
+        .price-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .current-price {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .price-change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .price-change.up {
+            color: #4CAF50;
+        }
+
+        .price-change.down {
+            color: #FF3B30;
+        }
+
+        /* Market List */
+        .market-list {
+            margin-top: 16px;
+        }
+
+        .market-item {
             display: flex;
             align-items: center;
             padding: 16px;
-            text-decoration: none;
-            color: inherit;
-            border-bottom: 1px solid var(--tg-theme-hint-color, rgba(142, 142, 147, 0.2));
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: rgba(18, 18, 18, 0.6);
+            border: 1px solid rgba(0, 188, 212, 0.1);
+            transition: all 0.2s ease;
         }
 
-        .menu-item:last-child {
-            border-bottom: none;
+        .market-info {
+            flex: 1;
+            margin-right: 16px;
         }
 
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
+        .market-name {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--tg-theme-link-color, #64B5F6);
-        }
-
-        .menu-text {
-            flex: 1;
-        }
-
-        .menu-title {
-            font-size: 16px;
+            gap: 8px;
             margin-bottom: 4px;
         }
 
-        .menu-subtitle {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color, #8e8e93);
+        .coin-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, rgba(0, 188, 212, 0.1), rgba(0, 151, 167, 0.1));
+            border: 1px solid rgba(0, 188, 212, 0.2);
         }
 
-        .orders-section {
-            margin-top: 24px;
+        .coin-name {
+            font-size: 15px;
+            font-weight: 600;
         }
 
-        .orders-header {
+        .coin-symbol {
             font-size: 13px;
-            color: var(--tg-theme-hint-color, #8e8e93);
-            text-transform: uppercase;
-            margin-bottom: 12px;
+            color: var(--tg-theme-hint-color);
+            background: rgba(0, 188, 212, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
-        .orders-empty {
+        .market-price {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .market-change {
+            text-align: right;
+        }
+
+        .price-change {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .price-change.up {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .price-change.down {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+
+        .price-change::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+        }
+
+        .price-change.up::after {
+            border-bottom: 4px solid #4CAF50;
+        }
+
+        .price-change.down::after {
+            border-top: 4px solid #FF3B30;
+        }
+
+        .volume-info {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .volume-info::before {
+            content: '24h Vol:';
+            opacity: 0.7;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #1e1e1e, #2e2e2e); /* Gradient gray background */
+            border-top: 1px solid rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 0; /* Increased padding for consistent height */
+            height: 60px; /* Fixed height for uniformity */
+            z-index: 1000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3); /* Enhanced glow effect */
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #CCCCCC; /* Updated gray text for better visibility */
+            text-decoration: none;
+            font-size: 14px; /* Slightly larger font for consistency */
+            gap: 4px;
+            transition: all 0.2s ease;
+            padding: 10px 12px; /* Adjusted padding for better spacing */
+            border-radius: 12px; /* Slightly more rounded corners */
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+            background: linear-gradient(145deg, #00bcd4, #0097a7); /* Consistent gradient */
+            box-shadow: 0 4px 16px rgba(0, 188, 212, 0.4); /* Stronger active glow */
+        }
+
+        .nav-icon {
+            font-size: 24px; /* Increased icon size for consistency */
+            margin-bottom: 6px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.15); /* Slightly more opaque hover background */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Added hover glow */
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2); /* Enhanced hover scaling for better effect */
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin: 16px 12px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(18, 18, 18, 0.6);
+            font-size: 14px;
+            color: var(--tg-theme-text-color);
+            border: 1px solid rgba(0, 188, 212, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: rgba(0, 188, 212, 0.3);
+            box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Bounce Animation for Header Title */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .header-title::before {
+            animation: float 3s ease-in-out infinite, bounce 2s ease-in-out infinite;
+        }
+
+        /* Enhanced Hover Effects */
+        .market-item:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4081;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: confetti-fall 1s forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Fade-in Animation for Market Result */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .market-result.show {
+            animation: fadeIn 0.5s ease forwards;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(230,255,230,0.9) 100%);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+        }
+
+        /* Add subtle animations to buttons and interactive elements */
+        .trending-section:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        /* Market-specific premium enhancements */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            padding: 12px;
+        }
+
+        .market-card {
+            background: rgba(18,18,18,0.6);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .market-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,188,212,0.1);
+        }
+
+        .coin-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: rgba(18,18,18,0.8);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
-            color: var(--tg-theme-hint-color, #8e8e93);
-            padding: 32px 0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Advanced Chart Styles */
+        .chart-container {
+            background: rgba(18,18,18,0.6);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 16px 0;
+            backdrop-filter: blur(4px);
+        }
+
+        .timeframe-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .timeframe-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(18,18,18,0.8);
+            border: 1px solid rgba(0,188,212,0.2);
+            color: var(--tg-theme-hint-color);
+            transition: all 0.3s ease;
+        }
+
+        .timeframe-btn.active {
+            background: #00bcd4;
+            color: white;
+            border-color: transparent;
         }
     </style>
 </head>
-<body style="visibility: hidden;">
-    <div class="container">
-        <div class="header">
-            <a href="#" class="back-button" onclick="WalletApp.navigateBack(); return false;">← Back</a>
-            <div class="title">Wallet</div>
+<body>
+    <div class="header">
+        <h1 class="header-title">Market</h1>
+    </div>
+
+    <div class="category-tabs">
+        <div class="category-tab card active">
+            <span class="nav-icon">🔥</span>
+            <span>Trending</span>
         </div>
-
-        <div class="market-logo">
-            <div class="logo-container">
-                <div class="logo-dollar">$</div>
-                <div class="logo-ton">T</div>
-            </div>
+        <div class="category-tab card">
+            <span class="nav-icon">��</span>
+            <span>Top Gainers</span>
         </div>
-
-        <div class="market-title">P2P Market</div>
-        <div class="market-subtitle">Buy and sell cryptocurrency without intermediaries</div>
-
-        <div class="action-buttons">
-            <a href="#" class="action-button" onclick="WalletApp.handleBuy(); return false;">Buy</a>
-            <a href="#" class="action-button" onclick="WalletApp.handleSell(); return false;">Sell</a>
+        <div class="category-tab card">
+            <span class="nav-icon">🌟</span>
+            <span>New Gems</span>
         </div>
-
-        <div class="menu-list">
-            <a href="#" class="menu-item" onclick="WalletApp.navigateTo('my-ads.html'); return false;">
-                <div class="menu-icon">📝</div>
-                <div class="menu-text">
-                    <div class="menu-title">My Ads</div>
-                    <div class="menu-subtitle">Manage ads and payment settings</div>
-                </div>
-            </a>
-            <a href="#" class="menu-item" onclick="WalletApp.handleCreateAd(); return false;">
-                <div class="menu-icon">➕</div>
-                <div class="menu-text">
-                    <div class="menu-title">Create Ad</div>
-                    <div class="menu-subtitle">Create a new P2P advertisement</div>
-                </div>
-            </a>
-            <a href="#" class="menu-item">
-                <div class="menu-icon">🔔</div>
-                <div class="menu-text">
-                    <div class="menu-title">Notifications</div>
-                </div>
-            </a>
-            <a href="#" class="menu-item">
-                <div class="menu-icon">❓</div>
-                <div class="menu-text">
-                    <div class="menu-title">FAQ</div>
-                </div>
-            </a>
-        </div>
-
-        <div class="orders-section">
-            <div class="orders-header">My Orders</div>
-            <div class="orders-empty">Your orders will appear here</div>
+        <div class="category-tab card">
+            <span class="nav-icon">📊</span>
+            <span>All</span>
         </div>
     </div>
 
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" class="input" placeholder="Search coins...">
+        </div>
+
+        <div class="trending-section card animate-fade-in">
+            <div class="section-header">
+                <div class="section-title">🔥 Trending Memecoins</div>
+            </div>
+            <div class="trending-grid">
+                <div class="trending-item card">
+                    <div class="trending-header">
+                        <span class="coin-icon">🐕</span>
+                        <div>
+                            <div class="coin-name">Dogecoin</div>
+                            <div class="coin-symbol">DOGE</div>
+                        </div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">$0.068</div>
+                        <div class="price-change up">+5.2%</div>
+                    </div>
+                </div>
+                <div class="trending-item card">
+                    <div class="trending-header">
+                        <span class="coin-icon">🐕</span>
+                        <div>
+                            <div class="coin-name">Shiba Inu</div>
+                            <div class="coin-symbol">SHIB</div>
+                        </div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">$0.00024</div>
+                        <div class="price-change down">-2.1%</div>
+                    </div>
+                </div>
+                <div class="trending-item card">
+                    <div class="trending-header">
+                        <span class="coin-icon">🐸</span>
+                        <div>
+                            <div class="coin-name">Pepe</div>
+                            <div class="coin-symbol">PEPE</div>
+                        </div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">$0.000001</div>
+                        <div class="price-change up">+12.5%</div>
+                    </div>
+                </div>
+                <div class="trending-item card">
+                    <div class="trending-header">
+                        <span class="coin-icon">🌙</span>
+                        <div>
+                            <div class="coin-name">Moon</div>
+                            <div class="coin-symbol">MOON</div>
+                        </div>
+                    </div>
+                    <div class="price-info">
+                        <div class="current-price">$0.00005</div>
+                        <div class="price-change up">+8.3%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="market-list">
+            <div class="section-header">
+                <div class="section-title">All Memecoins</div>
+            </div>
+            <div class="market-item card">
+                <div class="market-info">
+                    <div class="market-name">
+                        <span>🐕</span>
+                        <span>Dogecoin</span>
+                        <span class="coin-symbol">DOGE</span>
+                    </div>
+                    <div class="market-price">$0.068</div>
+                </div>
+                <div class="market-change">
+                    <div class="price-change up">+5.2%</div>
+                    <div class="volume-info">Vol $1.2B</div>
+                </div>
+            </div>
+            <div class="market-item card">
+                <div class="market-info">
+                    <div class="market-name">
+                        <span>🐕</span>
+                        <span>Shiba Inu</span>
+                        <span class="coin-symbol">SHIB</span>
+                    </div>
+                    <div class="market-price">$0.00024</div>
+                </div>
+                <div class="market-change">
+                    <div class="price-change down">-2.1%</div>
+                    <div class="volume-info">Vol $890M</div>
+                </div>
+            </div>
+            <div class="market-item card">
+                <div class="market-info">
+                    <div class="market-name">
+                        <span>🐸</span>
+                        <span>Pepe</span>
+                        <span class="coin-symbol">PEPE</span>
+                    </div>
+                    <div class="market-price">$0.000001</div>
+                </div>
+                <div class="market-change">
+                    <div class="price-change up">+12.5%</div>
+                    <div class="volume-info">Vol $450M</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="market.html" class="nav-item active">
+            <span class="nav-icon">📊</span>
+            <span>Market</span>
+        </a>
+        <a href="trade.html" class="nav-item">
+            <span class="nav-icon">��</span>
+            <span>Trade</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+    </nav>
+
     <script>
-        // Initialize app
-        WalletApp.init();
+        // Initialize Telegram WebApp
+        Telegram.WebApp.ready();
+        
+        // Set the header color based on the theme
+        const isDarkTheme = window.Telegram.WebApp.colorScheme === 'dark';
+        Telegram.WebApp.setHeaderColor(isDarkTheme ? 'secondary_bg_color' : 'bg_color');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle category tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.category-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                });
+            });
+
+            // Handle market item clicks
+            document.querySelectorAll('.market-item, .trending-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const coinName = item.querySelector('.coin-name').textContent;
+                    const price = item.querySelector('.current-price')?.textContent || 
+                                item.querySelector('.market-price').textContent;
+                    
+                    Telegram.WebApp.showPopup({
+                        title: coinName,
+                        message: `Current price: ${price}\nWould you like to trade?`,
+                        buttons: [
+                            {id: 'buy', type: 'default', text: 'Buy'},
+                            {id: 'sell', type: 'destructive', text: 'Sell'},
+                            {id: 'cancel', type: 'cancel'}
+                        ]
+                    });
+                });
+            });
+
+            // Handle search
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.market-item').forEach(item => {
+                    const coinName = item.querySelector('.market-name').textContent.toLowerCase();
+                    item.style.display = coinName.includes(searchTerm) ? 'flex' : 'none';
+                });
+            });
+
+            // Simulate real-time price updates
+            setInterval(() => {
+                document.querySelectorAll('.current-price, .market-price').forEach(priceEl => {
+                    const currentPrice = parseFloat(priceEl.textContent.replace('$', ''));
+                    const change = (Math.random() - 0.5) * 2;
+                    const newPrice = currentPrice * (1 + change/100);
+                    priceEl.textContent = `$${newPrice.toFixed(6)}`;
+                    
+                    const changeEl = priceEl.closest('.trending-item, .market-item')
+                        .querySelector('.price-change');
+                    changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+                    changeEl.className = `price-change ${change >= 0 ? 'up' : 'down'}`;
+                });
+            }, 3000);
+        });
+
+        // Add euphoric effects
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['#ff4081', '#f50057', '#ff5722', '#ffeb3b', '#8bc34a', '#03a9f4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Add periodic euphoric triggers
+        setInterval(() => {
+            const positiveElements = document.querySelectorAll('.market-profit.positive, .ticker-change.up');
+            positiveElements.forEach(el => {
+                el.style.animation = 'glow 0.5s ease-in-out';
+            });
+        }, 5000);
     </script>
 </body>
 </html> 

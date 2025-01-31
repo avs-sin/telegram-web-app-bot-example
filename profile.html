@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Profile - Crypto Paper Trading</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="TelegramUI/src/styles/main.css">
+    <script src="js/app.js"></script>
+    
+    <style>
+        :root {
+            --tg-theme-bg-color: #000000; /* Pure black background */
+            --tg-theme-text-color: #ffffff; /* Bright white text color */
+            --tg-theme-hint-color: #888888; /* Subtle hint color */
+            --tg-theme-link-color: #00bcd4; /* Vibrant blue link color */
+            --tg-theme-button-color: #00bcd4; /* Vibrant blue button color */
+            --tg-theme-button-text-color: #ffffff; /* White button text */
+            --tg-theme-secondary-bg-color: #121212; /* Dark secondary background */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            padding: 0 12px; /* Match padding with trade.html */
+        }
+
+        /* Header Section */
+        .header {
+            padding: 16px 12px;
+            background: #000000; /* Solid black header */
+            border-bottom: 1px solid #333333; /* Subtle border */
+        }
+
+        .header-title {
+            font-size: 26px; /* Modern font size */
+            font-weight: 700; /* Modern font weight */
+            color: var(--tg-theme-text-color);
+            margin: 0;
+            text-shadow: none; /* Remove text shadow for cleaner look */
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 24px 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 12px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            background: rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-username {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 20px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Trading Performance */
+        .performance-section {
+            padding: 20px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .performance-card {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .performance-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .performance-label {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .profit {
+            color: #4CAF50;
+        }
+
+        .loss {
+            color: #FF3B30;
+        }
+
+        /* Settings List */
+        .settings-section {
+            padding: 20px 16px;
+        }
+
+        .settings-list {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .settings-text {
+            flex: 1;
+        }
+
+        .settings-label {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .settings-description {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        .settings-value {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000000; /* Solid black for bottom navigation */
+            border-top: 1px solid #333333; /* Subtle border */
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--tg-theme-hint-color);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--tg-theme-button-color);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+            color: #ff4081;
+        }
+
+        /* Bounce Animation for Header Title */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .header-title::before {
+            animation: float 3s ease-in-out infinite, bounce 2s ease-in-out infinite;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4081;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: confetti-fall 1s forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Fade-in Animation for Profile Result */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .profile-result.show {
+            animation: fadeIn 0.5s ease forwards;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(230,255,230,0.9) 100%);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+        }
+
+        /* Add subtle animations to buttons and interactive elements */
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .profile-name:hover {
+            color: var(--tg-theme-button-color);
+            transition: color 0.2s ease-in-out;
+        }
+
+        .profile-section:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transition: background-color 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Profile</h1>
+    </div>
+
+    <div class="profile-section card animate-fade-in">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">John Doe</div>
+        <div class="profile-username">@johndoe</div>
+    </div>
+
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Total Trades</div>
+            </div>
+            <div class="stat-item card">
+                <div class="stat-value text-success">76%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            <div class="stat-item card">
+                <div class="stat-value">15d</div>
+                <div class="stat-label">Trading Days</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="performance-section">
+        <div class="section-title">Trading Performance</div>
+        <div class="performance-grid">
+            <div class="performance-card card">
+                <div class="performance-value text-success">+$2,450.80</div>
+                <div class="performance-label">Total Profit/Loss</div>
+            </div>
+            <div class="performance-card card">
+                <div class="performance-value">$12,450.80</div>
+                <div class="performance-label">Portfolio Value</div>
+            </div>
+            <div class="performance-card card">
+                <div class="performance-value text-success">+24.5%</div>
+                <div class="performance-label">Return Rate</div>
+            </div>
+            <div class="performance-card card">
+                <div class="performance-value">$10,000.00</div>
+                <div class="performance-label">Initial Investment</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-section">
+        <div class="section-title">Settings</div>
+        <div class="settings-list card">
+            <div class="settings-item">
+                <div class="settings-icon">🔔</div>
+                <div class="settings-text">
+                    <div class="settings-label">Notifications</div>
+                    <div class="settings-description">Price alerts and trade updates</div>
+                </div>
+                <div class="settings-value">On</div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon">🌙</div>
+                <div class="settings-text">
+                    <div class="settings-label">Dark Mode</div>
+                    <div class="settings-description">Switch app theme</div>
+                </div>
+                <div class="settings-value">Auto</div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon">💰</div>
+                <div class="settings-text">
+                    <div class="settings-label">Currency</div>
+                    <div class="settings-description">Set your preferred currency</div>
+                </div>
+                <div class="settings-value">USD</div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon">🔄</div>
+                <div class="settings-text">
+                    <div class="settings-label">Reset Account</div>
+                    <div class="settings-description">Start fresh with $10,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="market.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Market</span>
+        </a>
+        <a href="trade.html" class="nav-item">
+            <span class="nav-icon">📈</span>
+            <span>Trade</span>
+        </a>
+        <a href="profile.html" class="nav-item active">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Initialize Telegram WebApp
+        Telegram.WebApp.ready();
+        
+        // Set the header color based on the theme
+        const isDarkTheme = window.Telegram.WebApp.colorScheme === 'dark';
+        Telegram.WebApp.setHeaderColor(isDarkTheme ? 'secondary_bg_color' : 'bg_color');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get user info from Telegram
+            const user = Telegram.WebApp.initDataUnsafe?.user || {};
+            if (user.first_name) {
+                document.querySelector('.profile-name').textContent = `${user.first_name} ${user.last_name || ''}`.trim();
+                document.querySelector('.profile-username').textContent = user.username ? `@${user.username}` : '';
+            }
+
+            // Handle settings clicks
+            document.querySelectorAll('.settings-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const label = item.querySelector('.settings-label').textContent;
+                    
+                    if (label === 'Reset Account') {
+                        Telegram.WebApp.showConfirm(
+                            'Are you sure you want to reset your account? This will clear all your trading history and set your balance back to $10,000.',
+                            (confirmed) => {
+                                if (confirmed) {
+                                    // Reset account logic here
+                                    Telegram.WebApp.showAlert('Account has been reset successfully!');
+                                }
+                            }
+                        );
+                    } else {
+                        const value = item.querySelector('.settings-value')?.textContent;
+                        Telegram.WebApp.showPopup({
+                            title: label,
+                            message: `Current setting: ${value || 'Not set'}`,
+                            buttons: [
+                                {type: 'default', text: 'Change'},
+                                {type: 'cancel'}
+                            ]
+                        });
+                    }
+                });
+            });
+
+            // Update stats periodically
+            function updateStats() {
+                const profitEls = document.querySelectorAll('.performance-value');
+                profitEls.forEach(el => {
+                    if (el.textContent.includes('%')) {
+                        const currentValue = parseFloat(el.textContent);
+                        const change = (Math.random() - 0.5) * 2;
+                        const newValue = currentValue + change;
+                        el.textContent = `${newValue >= 0 ? '+' : ''}${newValue.toFixed(1)}%`;
+                        el.className = `performance-value ${newValue >= 0 ? 'profit' : 'loss'}`;
+                    }
+                });
+            }
+
+            setInterval(updateStats, 5000);
+        });
+
+        // Add euphoric effects
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['#ff4081', '#f50057', '#ff5722', '#ffeb3b', '#8bc34a', '#03a9f4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Add periodic euphoric triggers
+        setInterval(() => {
+            const positiveElements = document.querySelectorAll('.profile-profit.positive, .ticker-change.up');
+            positiveElements.forEach(el => {
+                el.style.animation = 'glow 0.5s ease-in-out';
+            });
+        }, 5000);
+    </script>
+</body>
+</html> 

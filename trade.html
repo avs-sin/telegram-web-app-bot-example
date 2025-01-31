@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Trade - Crypto Paper Trading</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="TelegramUI/src/styles/main.css">
+    <script src="js/app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --tg-theme-bg-color: #000000; /* Pure black background */
+            --tg-theme-text-color: #ffffff; /* Bright white text color */
+            --tg-theme-hint-color: #888888; /* Subtle hint color */
+            --tg-theme-link-color: #00bcd4; /* Vibrant blue link color */
+            --tg-theme-button-color: #00bcd4; /* Vibrant blue button color */
+            --tg-theme-button-text-color: #ffffff; /* White button text */
+            --tg-theme-secondary-bg-color: #121212; /* Dark secondary background */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            padding: 0 12px; /* Match padding with market.html */
+        }
+
+        /* Header Section */
+        .header {
+            padding: 16px 12px;
+            background: #000000; /* Solid black header */
+            border-bottom: 1px solid #333333; /* Subtle border */
+        }
+
+        .header-title {
+            font-size: 26px; /* Modern font size */
+            font-weight: 700; /* Modern font weight */
+            color: var(--tg-theme-text-color);
+            margin: 0;
+            text-shadow: none; /* Remove text shadow for cleaner look */
+        }
+
+        /* Price Section */
+        .price-section {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 12px;
+        }
+
+        .current-price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .price-change {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .price-change.up {
+            color: #4CAF50;
+        }
+
+        .price-change.down {
+            color: #FF3B30;
+        }
+
+        /* Coin Selector */
+        .coin-selector {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .coin-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.04);
+            font-size: 15px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .coin-option.selected {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+        }
+
+        /* Trade Form */
+        .trade-form {
+            padding: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: var(--tg-theme-hint-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 15px;
+            background: none;
+            color: var(--tg-theme-text-color);
+        }
+
+        .input-addon {
+            position: absolute;
+            right: 12px;
+            color: var(--tg-theme-hint-color);
+            font-size: 13px;
+        }
+
+        .percentage-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .percentage-option {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .percentage-option.selected {
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            border-color: var(--tg-theme-button-color);
+        }
+
+        /* Trade Actions */
+        .trade-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .action-button {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .buy-button {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .sell-button {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+
+        /* Order Preview */
+        .order-preview {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 12px;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .preview-label {
+            color: var(--tg-theme-hint-color);
+        }
+
+        .preview-value {
+            font-weight: 500;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000000; /* Solid black for bottom navigation */
+            border-top: 1px solid #333333; /* Subtle border */
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--tg-theme-hint-color);
+            text-decoration: none;
+            font-size: 12px;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--tg-theme-button-color);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+            color: #ff4081;
+        }
+
+        /* Trade Result */
+        .trade-result {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: var(--tg-theme-bg-color);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .trade-result.show {
+            animation: fadeIn 0.5s ease forwards;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(230,255,230,0.9) 100%);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+        }
+
+        .result-emoji {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-message {
+            font-size: 15px;
+            color: var(--tg-theme-hint-color);
+        }
+
+        /* Bounce Animation for Header Title */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .header-title::before {
+            animation: float 3s ease-in-out infinite, bounce 2s ease-in-out infinite;
+        }
+
+        /* Enhanced Hover Effects */
+        .trade-item:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4081;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: confetti-fall 1s forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Fade-in Animation for Trade Result */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -60%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Add subtle animations to buttons and interactive elements */
+        .price-section:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .current-price:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .price-change:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease-in-out;
+        }
+
+        /* Core premium styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Trade Container */
+        .trade-container {
+            background: rgba(18,18,18,0.6);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            margin: 16px 0;
+        }
+
+        /* Order Form */
+        .trade-form {
+            background: rgba(18,18,18,0.8);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Price Input */
+        .price-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,188,212,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .price-input:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 8px rgba(0,188,212,0.2);
+        }
+
+        /* Order Book */
+        .order-book {
+            background: rgba(18,18,18,0.6);
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .order-row {
+            background: rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin: 4px 0;
+            transition: all 0.2s ease;
+        }
+
+        /* Trade Buttons */
+        .trade-button {
+            background: linear-gradient(45deg, rgba(0,188,212,0.8), rgba(76,175,80,0.8));
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .trade-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,188,212,0.3);
+        }
+
+        /* Position Indicators */
+        .position-indicator {
+            background: rgba(18,18,18,0.8);
+            border: 1px solid rgba(0,188,212,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Advanced Chart Integration */
+        .tradingview-chart {
+            border: 1px solid rgba(0,188,212,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Leverage Selector */
+        .leverage-selector {
+            background: rgba(18,18,18,0.8);
+            border: 1px solid rgba(0,188,212,0.2);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .leverage-option {
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .leverage-option.active {
+            background: rgba(0,188,212,0.2);
+            border: 1px solid #00bcd4;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Trade</h1>
+    </div>
+
+    <div class="price-section card animate-fade-in">
+        <div class="current-price">$0.068</div>
+        <div class="price-change up">+5.2% (24h)</div>
+    </div>
+
+    <div class="coin-selector">
+        <div class="coin-option card selected">
+            <span class="nav-icon">��</span>
+            <span>DOGE</span>
+        </div>
+        <div class="coin-option card">
+            <span class="nav-icon">��</span>
+            <span>SHIB</span>
+        </div>
+        <div class="coin-option card">
+            <span class="nav-icon">��</span>
+            <span>PEPE</span>
+        </div>
+        <div class="coin-option card">
+            <span class="nav-icon">��</span>
+            <span>MOON</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="trade-form card">
+            <div class="form-group">
+                <label class="form-label">Amount</label>
+                <div class="input-group">
+                    <input type="number" class="input" placeholder="0.00" id="amount-input">
+                    <span class="input-addon">USD</span>
+                </div>
+                <div class="percentage-grid">
+                    <div class="percentage-option card">25%</div>
+                    <div class="percentage-option card">50%</div>
+                    <div class="percentage-option card">75%</div>
+                    <div class="percentage-option card">100%</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Quantity</label>
+                <div class="input-group">
+                    <input type="number" class="input" placeholder="0.00" id="quantity-input">
+                    <span class="input-addon">DOGE</span>
+                </div>
+            </div>
+
+            <div class="order-preview card">
+                <div class="preview-row">
+                    <span class="preview-label">Price</span>
+                    <span class="preview-value">$0.068/DOGE</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-label">Total</span>
+                    <span class="preview-value">$0.00</span>
+                </div>
+                <div class="preview-row">
+                    <span class="preview-label">Available Balance</span>
+                    <span class="preview-value">$10,000.00</span>
+                </div>
+            </div>
+
+            <div class="trade-actions">
+                <button class="button bg-gradient buy-button">Buy DOGE</button>
+                <button class="button bg-gradient sell-button">Sell DOGE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="trade-result">
+        <div class="result-emoji">🎉</div>
+        <div class="result-title">Trade Successful!</div>
+        <div class="result-message">You bought 1,000 DOGE for $68.00</div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="market.html" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Market</span>
+        </a>
+        <a href="trade.html" class="nav-item active">
+            <span class="nav-icon">📈</span>
+            <span>Trade</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Initialize Telegram WebApp
+        Telegram.WebApp.ready();
+        
+        // Set the header color based on the theme
+        const isDarkTheme = window.Telegram.WebApp.colorScheme === 'dark';
+        Telegram.WebApp.setHeaderColor(isDarkTheme ? 'secondary_bg_color' : 'bg_color');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const prices = {
+                'DOGE': 0.068,
+                'SHIB': 0.00024,
+                'PEPE': 0.000001,
+                'MOON': 0.00005,
+                'FLOKI': 0.00002
+            };
+
+            let selectedCoin = 'DOGE';
+            let currentPrice = prices[selectedCoin];
+
+            // Handle coin selection
+            document.querySelectorAll('.coin-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.coin-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    selectedCoin = option.textContent.split(' ')[1];
+                    currentPrice = prices[selectedCoin];
+                    updatePrice();
+                    updateInputs();
+                });
+            });
+
+            // Handle percentage options
+            document.querySelectorAll('.percentage-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.percentage-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    
+                    const percent = parseInt(option.textContent);
+                    const balance = 10000; // Get actual balance
+                    document.getElementById('amount-input').value = (balance * (percent / 100)).toFixed(2);
+                    updateQuantity();
+                });
+            });
+
+            // Handle amount input
+            const amountInput = document.getElementById('amount-input');
+            amountInput.addEventListener('input', updateQuantity);
+
+            // Handle quantity input
+            const quantityInput = document.getElementById('quantity-input');
+            quantityInput.addEventListener('input', () => {
+                const quantity = parseFloat(quantityInput.value) || 0;
+                amountInput.value = (quantity * currentPrice).toFixed(2);
+                updatePreview();
+            });
+
+            // Handle buy/sell actions
+            document.querySelector('.buy-button').addEventListener('click', () => {
+                executeTrade('buy');
+            });
+
+            document.querySelector('.sell-button').addEventListener('click', () => {
+                executeTrade('sell');
+            });
+
+            function updatePrice() {
+                document.querySelector('.current-price').textContent = `$${currentPrice}`;
+                document.querySelector('.input-addon').textContent = selectedCoin;
+                document.querySelector('.preview-value').textContent = `$${currentPrice}/${selectedCoin}`;
+                document.querySelector('.buy-button').textContent = `Buy ${selectedCoin}`;
+                document.querySelector('.sell-button').textContent = `Sell ${selectedCoin}`;
+            }
+
+            function updateQuantity() {
+                const amount = parseFloat(amountInput.value) || 0;
+                const quantity = amount / currentPrice;
+                quantityInput.value = quantity.toFixed(6);
+                updatePreview();
+            }
+
+            function updatePreview() {
+                const amount = parseFloat(amountInput.value) || 0;
+                document.querySelectorAll('.preview-value')[1].textContent = `$${amount.toFixed(2)}`;
+            }
+
+            function executeTrade(type) {
+                const amount = parseFloat(amountInput.value);
+                const quantity = parseFloat(quantityInput.value);
+                
+                if (!amount || !quantity) {
+                    Telegram.WebApp.showPopup({
+                        title: 'Error',
+                        message: 'Please enter a valid amount',
+                        buttons: [{type: 'ok'}]
+                    });
+                    return;
+                }
+
+                const result = document.querySelector('.trade-result');
+                result.querySelector('.result-emoji').textContent = type === 'buy' ? '🎉' : '📊';
+                result.querySelector('.result-title').textContent = 'Trade Successful!';
+                result.querySelector('.result-message').textContent = 
+                    `You ${type === 'buy' ? 'bought' : 'sold'} ${quantity.toFixed(2)} ${selectedCoin} for $${amount.toFixed(2)}`;
+                
+                result.classList.add('show');
+                setTimeout(() => {
+                    result.classList.remove('show');
+                    // Reset form
+                    amountInput.value = '';
+                    quantityInput.value = '';
+                    updatePreview();
+                }, 2000);
+            }
+
+            // Simulate price updates
+            setInterval(() => {
+                const change = (Math.random() - 0.5) * 2;
+                currentPrice = prices[selectedCoin] * (1 + change/100);
+                prices[selectedCoin] = currentPrice;
+                
+                const priceEl = document.querySelector('.current-price');
+                const changeEl = document.querySelector('.price-change');
+                
+                priceEl.textContent = `$${currentPrice.toFixed(6)}`;
+                changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(1)}% (24h)`;
+                changeEl.className = `price-change ${change >= 0 ? 'up' : 'down'}`;
+                
+                updatePrice();
+                if (amountInput.value) updateQuantity();
+            }, 3000);
+        });
+
+        // Add euphoric effects
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        function getRandomColor() {
+            const colors = ['#ff4081', '#f50057', '#ff5722', '#ffeb3b', '#8bc34a', '#03a9f4'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Add periodic euphoric triggers
+        setInterval(() => {
+            const positiveElements = document.querySelectorAll('.trade-profit.positive, .ticker-change.up');
+            positiveElements.forEach(el => {
+                el.style.animation = 'glow 0.5s ease-in-out';
+            });
+        }, 5000);
+    </script>
+</body>
+</html> 

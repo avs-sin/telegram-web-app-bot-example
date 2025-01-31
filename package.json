@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@telegram-apps/telegram-ui": "^2.1.8"
+  }
+}
