@@ -1,0 +1,3 @@
+[submodule "TelegramUI"]
+	path = TelegramUI
+	url = https://github.com/avs-sin/TelegramUI.git
